@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
+    function me() { return request.auth.token.email.lower(); }
+    function isOwner() { return signedIn() && me() == 'PUT-MAE-EMAIL-HERE'; }
+    function accessDoc() { return /databases/$(database)/documents/access/$(me()); }
+    function isMember() { return signedIn() && exists(accessDoc()) && get(accessDoc()).data.role in ['broker', 'requester']; }
+    function isBroker() { return signedIn() && exists(accessDoc()) && get(accessDoc()).data.role == 'broker'; }
+
+    // Mae's whole board: Mae edits, Eric (broker) can only look
+    match /oonda/state  { allow read: if isOwner() || isBroker(); allow write: if isOwner(); }
+    // who can sign in (only Mae sees the full list)
+    match /oonda/roles  { allow read, write: if isOwner(); }
+    match /access/{email} { allow read: if signedIn() && email == me(); allow write: if isOwner(); }
+    // listing names + people for the request form
+    match /oonda/public { allow read: if isOwner() || isMember(); allow write: if isOwner(); }
+    // requests: people send their own and only see their own; Mae + Eric see all
+    match /requests/{id} {
+      allow read: if isOwner() || isBroker() || (isMember() && resource.data.email == me());
+      allow create: if isMember() && request.resource.data.email == me() && request.resource.data.status == 'sent';
+      allow update, delete: if isOwner();
+    }
+  }
+}
