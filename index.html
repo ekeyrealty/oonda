@@ -1990,7 +1990,7 @@ function startApp(ro){
   if(!ro){setTimeout(engine,1500);setInterval(engine,20000);}
   setInterval(()=>{if(!$('#modalWrap').innerHTML&&!/input|textarea|select/i.test(document.activeElement.tagName))render();},5*60000);
 }
-if(cloudOn())cloudBoot();else startApp(false);
+if(cloudOn()){const so=document.createElement('button');so.className='btn ghost';so.style.cssText='width:100%;justify-content:center;margin-top:10px';so.textContent='↪ sign out';so.onclick=()=>signOut();document.querySelector('.sidefoot').appendChild(so);} if(cloudOn())cloudBoot();else startApp(false);
 </script>
 </body>
 </html>
