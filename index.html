@@ -342,6 +342,8 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 .acts{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
 .cancelled{opacity:.55}
 .cancelled .mt{text-decoration:line-through}
+.mcard.done .mt{color:#8f8285}
+.mcard .chk{flex-shrink:0}
 
 /* plans */
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
@@ -1211,7 +1213,7 @@ function pMeet(){
   const now=Date.now();
   const up=S.meetings.filter(m=>['scheduled','moved'].includes(m.status)&&m.start+m.dur*6e4>now).sort((a,b)=>a.start-b.start);
   const past=S.meetings.filter(m=>!up.includes(m)).sort((a,b)=>b.start-a.start);
-  const card=m=>`<div class="mcard ${m.status==='cancelled'?'cancelled':''}"><div class="mi" style="background:${MTYPE[m.type].c}">${MTYPE[m.type].e}</div>
+  const card=m=>`<div class="mcard ${m.status==='cancelled'?'cancelled':''} ${m.status==='done'?'done':''}"><button class="chk" title="${m.status==='done'?'tap to undo':'mark done'}" onclick="setM('${m.id}','${m.status==='done'?'scheduled':'done'}',event)"></button><div class="mi" style="background:${MTYPE[m.type].c}">${MTYPE[m.type].e}</div>
     <div style="min-width:0"><div class="mt">${esc(m.title)}</div><div class="lab" style="margin-top:3px">${fD(m.start)} · ${fT(m.start)} pht · ${fT(m.start,CST)} ${cAb(m.start).toLowerCase()} · ${m.dur}m${m.where?' · '+esc(m.where):''}</div>
     ${m.movedFrom&&m.movedFrom.length?`<div class="moved">↪ moved ${m.movedFrom.length}× · was <s>${fD(m.movedFrom[m.movedFrom.length-1])} ${fT(m.movedFrom[m.movedFrom.length-1])}</s></div>`:''}${m.notes?`<div class="lab" style="margin-top:3px">📝 ${esc(m.notes)}</div>`:''}</div>
     <div class="mr"><div class="row" style="gap:6px"><span class="pill" style="background:${MST[m.status].c};color:${MST[m.status].t}">${m.status}</span>${['scheduled','moved'].includes(m.status)?`<span class="lab" style="color:var(--deeprose)">${m.start>now?'in '+dur(m.start-now):'now'}</span>`:''}</div>
@@ -1225,7 +1227,7 @@ function pMeet(){
   <p>⤓ send any meeting to <b>Google Calendar</b> or download an <b>.ics</b> (with built-in alarms) for Outlook / Apple Calendar.</p>
   <p style="margin-bottom:0">🕰️ enter times in PHT or US Central — oonda shows both everywhere.</p></div></div></div></div>`;
 }
-function setM(id,st){const m=S.meetings.find(x=>x.id===id);m.status=st;save();render();toast(st==='done'?'✅':'🗑️',`${m.title}`,st==='done'?'marked done':'cancelled');}
+function setM(id,st,ev){const m=S.meetings.find(x=>x.id===id);m.status=st;if(st==='done'&&ev)burst(ev.clientX,ev.clientY);if(CLOUD.role==='owner')logAct('meeting',(st==='done'?'finished ':st==='cancelled'?'cancelled ':'reopened ')+m.title);save();render();toast(st==='done'?'✅':st==='cancelled'?'🗑️':'↺',`${m.title}`,st==='done'?'marked done':st==='cancelled'?'cancelled':'back on the schedule');}
 
 /* ============ PLANS ============ */
 function pPlans(){
