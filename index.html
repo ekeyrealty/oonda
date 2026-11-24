@@ -171,8 +171,8 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 .seg button.on{background:var(--paper);color:var(--ink);box-shadow:0 4px 12px -6px rgba(110,60,72,.4)}
 
 /* quick add */
-.quick{display:flex;align-items:center;gap:10px;background:var(--paper);border-radius:22px;padding:8px 8px 8px 16px;box-shadow:var(--sh)}
-.quick input{flex:1;border:0;outline:0;background:transparent;font-family:var(--body);font-size:14.5px;font-weight:600;color:var(--ink);min-width:0}
+.quick{cursor:text;display:flex;align-items:center;gap:10px;background:var(--paper);border-radius:22px;padding:8px 8px 8px 16px;box-shadow:var(--sh)}
+.quick input{flex:1;align-self:stretch;padding:12px 0;cursor:text;border:0;outline:0;background:transparent;font-family:var(--body);font-size:14.5px;font-weight:600;color:var(--ink);min-width:0}
 .qprev{display:flex;flex-wrap:wrap;gap:6px;margin:8px 4px 0;min-height:22px}
 
 /* modal */
@@ -1018,7 +1018,7 @@ function pHome(){
     <div class="row" style="justify-content:flex-start;gap:4px;margin:-8px 0 6px 4px"><span class="hand" style="font-size:19px">everything due today lives here</span>${ARROW(34,24)}</div>
     ${todayList.length?todayList.slice(0,7).map(taskRow).join(''):'<div class="empty"><span class="hand">a clear day ✿</span>add something below</div>'}
     ${todayList.length>7?`<button class="link mt8" onclick="go('tasks')">+ ${todayList.length-7} more</button>`:''}
-    <div class="quick mt14" style="box-shadow:none;background:var(--soft)"><input id="qa" placeholder="type a task… e.g. flyer 735 magnolia 3pm !high" onkeydown="if(event.key==='Enter')quickAdd(this)"><button class="btn dark sm" onclick="quickAdd($('#qa'))">add</button></div><div class="qprev" id="qprev"></div>
+    <div class="quick mt14" style="box-shadow:none;background:var(--soft)" onclick="if(event.target===this)$('#qa').focus()"><input id="qa" placeholder="type a task… e.g. flyer 735 magnolia 3pm !high" onkeydown="if(event.key==='Enter')quickAdd(this)"><button class="btn dark sm" onclick="quickAdd($('#qa'))">add</button></div><div class="qprev" id="qprev"></div>
   </div>
 
   <div class="card s4 lights"><div class="ch"><h3>streak & calendar</h3><span class="lab">${fmt(now,{month:'long'}).toLowerCase()}</span></div>
@@ -1128,7 +1128,7 @@ function pTasks(){
   if(tasksWho==='others')list=list.filter(t=>(t.assignee||'me')!=='me');else if(tasksWho==='req')list=list.filter(t=>t.requestedBy);else if(tasksWho!=='all')list=list.filter(t=>t.requestedBy===tasksWho);
   const tab={today:t=>!isDone(t)&&t.due&&(dayKey(t.due)===k||isOverdue(t))||isDone(t)&&t.doneAt&&dayKey(t.doneAt)===k,upcoming:t=>!isDone(t)&&t.due&&dayKey(t.due)>k,overdue:isOverdue,someday:t=>!isDone(t)&&!t.due,done:isDone,all:()=>true}[tasksTab];
   const pr={high:0,med:1,low:2};
-  let html=`<div class="quick"><span style="font-size:18px">✿</span><input id="qa" placeholder="add a task the way you'd say it — “just listed flyer 88 willow fri 3pm !high”" onkeydown="if(event.key==='Enter')quickAdd(this)"><button class="btn dark" onclick="quickAdd($('#qa'))">add task</button><button class="btn ghost" onclick="openTask()">more options</button></div><div class="qprev" id="qprev"></div>
+  let html=`<div class="quick" onclick="if(event.target===this||event.target.tagName==='SPAN')$('#qa').focus()"><span style="font-size:18px">✿</span><input id="qa" placeholder="add a task the way you'd say it — “just listed flyer 88 willow fri 3pm !high”" onkeydown="if(event.key==='Enter')quickAdd(this)"><button class="btn dark" onclick="quickAdd($('#qa'))">add task</button><button class="btn ghost" title="open the full form with what you typed filled in" onclick="openTask(null,$('#qa').value.trim()?parseQuick($('#qa').value):{})">add with details</button></div><div class="qprev" id="qprev"></div>
   <div class="row mt14" style="flex-wrap:wrap">
     ${tasksView==='board'?'<span class="hand" style="font-size:20px">board shows every open task · drag a card to move it ✿</span>':''}<div class="seg" style="${tasksView==='board'?'display:none':''}">${[['today','today'],['upcoming','upcoming'],['overdue','overdue'],['someday','no date'],['done','done'],['all','all']].map(([v,l])=>`<button class="${tasksTab===v?'on':''}" onclick="tasksTab='${v}';render()">${l}${counts[v]!=null?` <span class="lab">${counts[v]}</span>`:''}</button>`).join('')}</div>
     <div class="seg"><button class="${tasksView==='list'?'on':''}" onclick="tasksView='list';render()">list</button><button class="${tasksView==='board'?'on':''}" onclick="tasksView='board';render()">board</button></div>
