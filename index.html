@@ -443,6 +443,35 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 .rev{display:inline-flex;align-items:center;gap:6px;background:var(--soft);border-radius:99px;padding:2px 3px 2px 10px;font-size:11px;font-weight:800;color:#6f5c60}
 .rev button{border:0;width:20px;height:20px;border-radius:50%;background:var(--paper);cursor:pointer;font-weight:900;color:var(--deeprose)}
 @media (max-width:1250px){.pgr{grid-template-columns:1fr}}
+/* chat */
+.chatbox{display:grid;grid-template-columns:270px 1fr;height:min(72vh,660px);min-height:460px}
+.chatside{background:linear-gradient(180deg,#fdf3ef,#fbefeb);padding:16px 10px;overflow:auto}
+.croom{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:16px;cursor:pointer;transition:background .2s;margin-bottom:2px}
+.croom:hover{background:rgba(240,193,199,.25)}
+.croom.on{background:var(--paper);box-shadow:var(--sh)}
+.croom .cn{font-weight:800;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.croom .cs{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.croom .cnt{font-family:var(--mono);font-size:11px;background:var(--deeprose);color:#fff;border-radius:99px;padding:1px 7px}
+.cteam{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#fbe3e2,#e6e7dc);display:grid;place-items:center;font-size:17px;flex-shrink:0}
+.chatmain{display:flex;flex-direction:column;min-width:0;background:var(--paper)}
+.chathead{display:flex;align-items:center;gap:10px;padding:14px 20px;box-shadow:0 1px 0 rgba(235,223,225,.7)}
+.chatmsgs{flex:1;overflow:auto;padding:10px 20px 16px;display:flex;flex-direction:column}
+.cmsg{display:flex;gap:8px;align-items:flex-end;max-width:78%;margin-top:3px}
+.cmsg.mine{align-self:flex-end;flex-direction:row-reverse}
+.cmsg.gap{margin-top:12px}
+.cb{display:flex;flex-direction:column;min-width:0}
+.cmsg.mine .cb{align-items:flex-end}
+.cname{font-size:11.5px;font-weight:800;color:#8a777b;margin:0 0 3px 10px}
+.bub{background:var(--paper2);box-shadow:inset 0 0 0 1px rgba(235,223,225,.9);border-radius:18px 18px 18px 6px;padding:9px 14px;font-size:14px;line-height:1.45;overflow-wrap:anywhere}
+.cmsg.mine .bub{background:linear-gradient(135deg,#f3cbd0,#e9b0b8);box-shadow:none;border-radius:18px 18px 6px 18px}
+.bub a{color:var(--deeprose);text-decoration:underline}
+.ctime{font-family:var(--mono);font-size:10px;color:var(--muted);margin:3px 8px 0;display:none}
+.cmsg:hover .ctime,.cmsg.last .ctime{display:block}
+.cdel{border:0;background:none;color:var(--deeprose);font-family:var(--mono);font-size:10px;cursor:pointer;padding:0}
+.chatin{display:flex;gap:10px;align-items:flex-end;padding:12px 16px;box-shadow:0 -1px 0 rgba(235,223,225,.7)}
+.chatin textarea{flex:1;border:0;outline:0;resize:none;background:#f8eeea;border-radius:18px;padding:11px 16px;font-family:var(--body);font-size:14px;color:var(--ink);max-height:140px;transition:box-shadow .2s,background .2s}
+.chatin textarea:focus{box-shadow:0 0 0 3px rgba(217,143,151,.3);background:#fff}
+@media (max-width:900px){.chatbox{grid-template-columns:1fr;height:auto}.chatside{max-height:210px}.chatmsgs{height:55vh}}
 /* activity */
 .act{display:flex;gap:12px;align-items:center;padding:9px 8px;border-radius:16px;transition:background .2s}
 .act:hover{background:var(--soft)}
@@ -920,7 +949,7 @@ function officeStatus(){
 
 /* ============ router + chrome ============ */
 let tasksWho='all',outTab='all',outRange='week',stKind='all',tasksTab='today',tasksView='list',tasksCat='all',lFilter='all',nextSkip=0,calYM=null,calSel=null,repYM=null;
-const PAGES={home:['home','home'],tasks:['tasks','tasks'],listings:['listings','listings'],calendar:['calendar','calendar'],meetings:['meetings','meetings & trainings'],plans:['plans','plans'],report:['report','monthly report'],settings:['settings','settings'],requests:['requests','requests'],mine:['mine','my requests'],activity:['activity','activity'],studio:['studio','studio']};
+const PAGES={home:['home','home'],tasks:['tasks','tasks'],listings:['listings','listings'],calendar:['calendar','calendar'],meetings:['meetings','meetings & trainings'],plans:['plans','plans'],report:['report','monthly report'],settings:['settings','settings'],requests:['requests','requests'],mine:['mine','my requests'],activity:['activity','activity'],chat:['chat','chat'],studio:['studio','studio']};
 function go(p){if(location.hash==='#'+p)render();else location.hash=p;closeM();window.scrollTo({top:0,behavior:'smooth'});}
 function nav(){
   const pg=curPage(),od=S.tasks.filter(isOverdue).length,tdy=S.tasks.filter(t=>!isDone(t)&&t.due&&dayKey(t.due)===todayKey()).length;
@@ -928,7 +957,7 @@ function nav(){
   const up=S.meetings.filter(m=>['scheduled','moved'].includes(m.status)&&m.start>Date.now()).length;
   const it=(k,ico,label,cnt='',hot=false)=>`<a class="${pg===k?'on':''}" onclick="go('${k}')">${ic(ico)}${label}${cnt!==''?`<span class="cnt ${hot?'hot':''}">${cnt}</span>`:''}</a>`;
   $('#nav').innerHTML=it('home','home','home')+
-   `<div class="navlab">every day</div>`+it('tasks','tasks','tasks',od||tdy,!!od)+it('calendar','calendar','calendar')+it('meetings','meetings','meetings',up)+(CLOUD.on?it('activity','bell','activity'):'')+it('requests','team','requests',S.tasks.filter(t=>t.requestedBy&&!isDone(t)).length)+
+   `<div class="navlab">every day</div>`+it('tasks','tasks','tasks',od||tdy,!!od)+it('calendar','calendar','calendar')+it('meetings','meetings','meetings',up)+(CLOUD.on?it('chat','chat','chat',chatUnreadTotal()||'',chatUnreadTotal()>0)+it('activity','bell','activity'):'')+it('requests','team','requests',S.tasks.filter(t=>t.requestedBy&&!isDone(t)).length)+
    `<div class="navlab">marketing</div>`+it('listings','listings','listings',act)+it('studio','studio','studio',S.studio.filter(j=>j.stage!=='delivered').length)+it('plans','plans','plans',S.plans.length)+
    `<div class="navlab">reports</div>`+(CLOUD.role==='broker'?it('mine','meetings','my requests',(CLOUD.mine||[]).filter(r=>!['done','closed'].includes(r.status)).length):'')+it('report','report','monthly report')+it('settings','settings','settings');
 }
@@ -936,7 +965,7 @@ const curPage=()=>{const p=(location.hash.slice(1)||'home').split('/')[0];return
 function header(pg){
   const now=Date.now();
   const title=pg==='home'?`${greeting()}, ${esc(viewer())}`:PAGES[pg][1];
-  const subs={tasks:'everything you need to make, sorted by when it\'s due',listings:'change a status and oonda makes the marketing tasks for you',calendar:'tasks, deadlines, meetings and listing dates in one month',meetings:'scheduled, moved, done — every change is tracked',plans:'bigger campaigns broken into steps you can push to tasks',report:'auto-built from what you logged this month',settings:'make oonda yours',requests:'who asked for what — log it, do it, let them know it\'s done',mine:'send Mae a request and watch it move',activity:'who signed in, who asked for what, and what got done — live',studio:'virtual staging and video tours, from brief to delivered'};
+  const subs={tasks:'everything you need to make, sorted by when it\'s due',listings:'change a status and oonda makes the marketing tasks for you',calendar:'tasks, deadlines, meetings and listing dates in one month',meetings:'scheduled, moved, done — every change is tracked',plans:'bigger campaigns broken into steps you can push to tasks',report:'auto-built from what you logged this month',settings:'make oonda yours',requests:'who asked for what — log it, do it, let them know it\'s done',mine:'send Mae a request and watch it move',activity:'who signed in, who asked for what, and what got done — live',chat:'talk with the team — a group room for everyone, plus private chats',studio:'virtual staging and video tours, from brief to delivered'};
   return `<div class="top"><div><div class="lab">${fmt(now,{weekday:'long',month:'long',day:'numeric'}).toLowerCase()} · ${fT(now)} pht · ${fT(now,CST)} ${cAb(now).toLowerCase()}</div><h1 class="h1">${title}<span class="ast">𖹭</span></h1>${subs[pg]?`<div class="sub">${subs[pg]}</div>`:''}</div>
   <div class="topr"><div class="search">${ic('search',16)}<input id="q" placeholder="search tasks, listings, meetings…" oninput="doSearch(this.value)" onblur="setTimeout(()=>{const r=$('#qres');if(r)r.style.display='none'},200)"><div id="qres"></div></div>
   <button class="ib" onclick="cycleMood()" title="change mood">🎨</button><button class="ib" onclick="togglePanel()" title="notifications">${ic('bell')}<i id="bdot"></i></button><span class="saved" id="saved">${CLOUD.on?(CLOUD.readonly?'view only':'☁ synced'):'saved'}</span><button class="createbtn" onclick="openAdd()"><span>+</span>create new</button><span onclick="${CLOUD.on?'acctMenu()':"go('settings')"}" style="cursor:pointer" title="your account">${av(CLOUD.role==='broker'?CLOUD.person:'me',40)}</span></div></div>
@@ -947,7 +976,7 @@ function render(){
   {const me=P('me');if(me)me.name=S.settings.name;}
   document.body.className='mood-'+S.mood+(CLOUD.readonly?' readonly':'');
   nav();
-  $('#main').innerHTML=header(pg)+`<div class="fadein">${({home:pHome,tasks:pTasks,listings:pListings,calendar:pCal,meetings:pMeet,plans:pPlans,report:pReport,settings:pSet,requests:pTeam,mine:pMine,activity:pActivity,studio:pStudio})[pg]()}</div>`;
+  $('#main').innerHTML=header(pg)+`<div class="fadein">${({home:pHome,tasks:pTasks,listings:pListings,calendar:pCal,meetings:pMeet,plans:pPlans,report:pReport,settings:pSet,requests:pTeam,mine:pMine,activity:pActivity,chat:pChat,studio:pStudio})[pg]()}</div>`;
   bellDot();tickClocks();updateIsland();convT();
   const qa=$('#qa');if(qa)qa.oninput=()=>qPreview(qa.value);
 }
@@ -1734,6 +1763,9 @@ service cloud.firestore {
     match /access/{email} { allow read: if signedIn() && email == me(); allow write: if isOwner(); }
     // listing names + people for the request form
     match /oonda/public { allow read: if isOwner() || isMember(); allow write: if isOwner(); }
+    // chat: team room everyone on oonda reads; private rooms only the two people in the room id; you can delete only your own messages
+    match /chat/{id} { allow read: if isOwner() || isMember(); allow create: if (isOwner() || isMember()) && request.resource.data.email == me(); allow delete: if signedIn() && resource.data.email == me(); allow update: if false; }
+    match /dms/{room}/msgs/{id} { allow read: if (isOwner() || isMember()) && me() in room.split('~'); allow create: if (isOwner() || isMember()) && me() in room.split('~') && request.resource.data.email == me(); allow delete: if signedIn() && resource.data.email == me(); allow update: if false; }
     // activity log: everyone signed in can read; each person only adds entries as themselves; nobody can edit or delete
     match /activity/{id} { allow read: if isOwner() || isMember(); allow create: if (isOwner() || isMember()) && request.resource.data.email == me(); allow update, delete: if false; }
     // requests: people send their own and only see their own; Mae + Eric see all
@@ -1820,7 +1852,7 @@ async function startOwner(){
   }));
   CLOUD.unsub.push(CLOUD.db.collection('requests').onSnapshot(qs=>{CLOUD.reqs=qs.docs.map(d=>Object.assign({id:d.id},d.data()));ingestRequests();},e=>console.warn(e)));
   try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
-  hideGate();startApp(false);pushPublic(true);listenActivity();logSignin();
+  hideGate();startApp(false);pushPublic(true);listenActivity();logSignin();startChat();
 }
 async function startBroker(){
   CLOUD.readonly=true;
@@ -1828,13 +1860,13 @@ async function startBroker(){
   try{const s=await ref.get();if(!s.exists){showGate('error','Mae hasn\'t opened oonda online yet — try again a little later');return;}CLOUD.lastRemote=s.data().json;S=migrate(JSON.parse(CLOUD.lastRemote));}
   catch(e){showGate('error',niceErr(e));return;}
   CLOUD.unsub.push(ref.onSnapshot(s=>{if(!s.exists)return;CLOUD.lastRemote=s.data().json;S=migrate(JSON.parse(CLOUD.lastRemote));if(!$('#modalWrap').innerHTML&&!/input|textarea|select/i.test(document.activeElement.tagName))render();}));
-  listenMine();listenActivity();hideGate();startApp(true);logSignin();
+  listenMine();listenActivity();startChat();hideGate();startApp(true);logSignin();
   toast('👀',`hi ${viewer().toLowerCase()} — you're viewing Mae's board`,'send her something from "my requests" in the sidebar','auto','',9000);
 }
 function startRequester(){
   document.querySelector('.app').style.display='none';$('#island').style.display='none';
   let p=$('#portal');if(!p){p=document.createElement('div');p.id='portal';document.body.appendChild(p);}
-  listenMine();listenActivity();hideGate();renderPortal();logSignin();
+  listenMine();listenActivity();startChat();hideGate();renderPortal();logSignin();
   setInterval(()=>{const pl=$('#pList');if(pl)pl.innerHTML=reqListHTML();},60000);
 }
 
@@ -1852,7 +1884,7 @@ function cloudPush(){
 function setBadge(t){const b=$('#saved');if(b)b.textContent=t;}
 function pushPublic(force){
   if(CLOUD.role!=='owner')return;
-  const pub={listings:S.listings.filter(l=>l.status!=='withdrawn').map(l=>({id:l.id,address:l.address,city:l.city||''})),people:S.team.map(p=>({id:p.id,name:p.name}))};
+  const pub={listings:S.listings.filter(l=>l.status!=='withdrawn').map(l=>({id:l.id,address:l.address,city:l.city||''})),people:S.team.map(p=>({id:p.id,name:p.id==='me'?(S.settings.name||'mae'):p.name,email:emailOfPid(p.id)}))};
   const j=JSON.stringify(pub);if(!force&&j===CLOUD.pubJson)return;CLOUD.pubJson=j;
   CLOUD.db.doc('oonda/public').set(Object.assign(pub,{updatedAt:ts0()})).catch(()=>{});
 }
@@ -1891,9 +1923,106 @@ async function saveAccess(){
     Object.entries(map).forEach(([em,v])=>b.set(CLOUD.db.doc('access/'+em),v));
     Object.keys(CLOUD.roles).forEach(em=>{if(!map[em])b.delete(CLOUD.db.doc('access/'+em));});
     await b.commit();CLOUD.roles=map;
-    toast('🔐','access saved',`${Object.keys(map).length} ${Object.keys(map).length==1?'person':'people'} can sign in now`,'auto');
+    pushPublic(true);syncChatSubs();toast('🔐','access saved',`${Object.keys(map).length} ${Object.keys(map).length==1?'person':'people'} can sign in now`,'auto');
   }catch(e){toast('🙈','couldn\'t save access',niceErr(e));}
 }
+
+/* chat: team room + private 1:1 messages */
+ICONS.chat='<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h7A2.5 2.5 0 0 1 16 6.5v4a2.5 2.5 0 0 1-2.5 2.5H9l-3.5 3v-3A2.5 2.5 0 0 1 4 10.5z"/><path d="M16 9h1.5A2.5 2.5 0 0 1 20 11.5v4a2.5 2.5 0 0 1-2.5 2.5V21L14 18h-2.5A2.5 2.5 0 0 1 9 16"/>';
+const CHAT={room:'team',msgs:{},subs:{},first:{},read:{}};
+const meEmail=()=>CLOUD.user?CLOUD.user.email.toLowerCase():'';
+const ownerEm=()=>String(SETUP.ownerEmail||'').toLowerCase();
+const cap=s=>s?String(s)[0].toUpperCase()+String(s).slice(1):s;
+function chatReadLoad(){try{CHAT.read=JSON.parse(localStorage.getItem('oonda.chatread.'+CLOUD.user.uid)||'{}');}catch(e){CHAT.read={};}}
+function chatReadSave(){try{localStorage.setItem('oonda.chatread.'+CLOUD.user.uid,JSON.stringify(CHAT.read));}catch(e){}}
+function emailOfPid(pid){if(pid==='me')return ownerEm();const e=Object.entries(CLOUD.roles||{}).find(([em,v])=>v.person===pid);return e?e[0]:'';}
+function chatPeople(){
+  const me=meEmail();let ppl;
+  if(CLOUD.role==='owner')ppl=S.team.map(p=>({pid:p.id,name:p.id==='me'?(S.settings.name||'mae'):p.name,email:emailOfPid(p.id)}));
+  else ppl=((CLOUD.pub&&CLOUD.pub.people)||[]).map(p=>({pid:p.id,name:p.name,email:String(p.email||'').toLowerCase()}));
+  return ppl.filter(p=>p.email&&p.email!==me);
+}
+const dmRoom=em=>'dm:'+[meEmail(),em].sort().join('~');
+const roomColl=room=>room==='team'?CLOUD.db.collection('chat'):CLOUD.db.collection('dms').doc(room.slice(3)).collection('msgs');
+const chatViewing=room=>!!$('#chatMsgs')&&CHAT.room===room&&document.visibilityState==='visible';
+function subRoom(room){
+  if(CHAT.subs[room])return;
+  if(CHAT.read[room]===undefined){CHAT.read[room]=room==='team'?Date.now():0;chatReadSave();}
+  CHAT.first[room]=true;
+  CHAT.subs[room]=roomColl(room).orderBy('ms','desc').limit(200).onSnapshot(qs=>{
+    if(!CHAT.first[room])qs.docChanges().forEach(c=>{if(c.type!=='added')return;const m=c.doc.data();if(m.email!==meEmail()&&!chatViewing(room))chatPing(room,m);});
+    CHAT.first[room]=false;
+    CHAT.msgs[room]=qs.docs.map(d=>Object.assign({id:d.id},d.data())).reverse();
+    chatRefresh(room);
+  },e=>console.warn('chat',e));
+  CLOUD.unsub.push(CHAT.subs[room]);
+}
+function syncChatSubs(){if(!CLOUD.on||!CLOUD.user||!CLOUD.db)return;subRoom('team');chatPeople().forEach(p=>subRoom(dmRoom(p.email)));}
+function startChat(){chatReadLoad();syncChatSubs();}
+const msgName=m=>m.email===ownerEm()?cap(S.settings.name&&CLOUD.role==='owner'?S.settings.name:'mae'):(P(m.person)?rname(m.person):(m.name||m.email));
+const msgPid=m=>m.email===ownerEm()?'me':(m.person||m.email);
+function chatPing(room,m){
+  const who=msgName(m);
+  toast('💬',room==='team'?who+' · team chat':who,String(m.text).slice(0,120),'auto',`<button class="btn sm rose" data-r="${esc(room)}" onclick="openChat(this.dataset.r);this.closest('.toast').remove()">reply</button>`,9000);
+  chime();
+  if('Notification' in window&&Notification.permission==='granted'&&document.visibilityState!=='visible'){try{new Notification('oonda · '+who,{body:String(m.text).slice(0,120)});}catch(e){}}
+}
+const unread=room=>(CHAT.msgs[room]||[]).filter(m=>m.email!==meEmail()&&m.ms>(CHAT.read[room]||0)).length;
+const chatUnreadTotal=()=>Object.keys(CHAT.subs).reduce((a,r)=>a+unread(r),0);
+function markRead(room){const l=CHAT.msgs[room]||[];CHAT.read[room]=Math.max(CHAT.read[room]||0,Date.now(),l.length?l[l.length-1].ms:0);chatReadSave();}
+function chatBadges(){const n=chatUnreadTotal();document.title=n?`(${n}) oonda`:'oonda';if(CLOUD.role!=='requester'&&appStarted)nav();}
+function chatRooms(){return [{room:'team',name:'team chat',sub:'everyone on oonda',pid:null},...chatPeople().map(p=>({room:dmRoom(p.email),name:cap(p.name),sub:'private',pid:p.pid}))];}
+function chatListHTML(){
+  return chatRooms().map(r=>{const u=r.room===CHAT.room?0:unread(r.room),l=(CHAT.msgs[r.room]||[]).slice(-1)[0];
+    const prev=l?(l.email===meEmail()?'you: ':(r.room==='team'?msgName(l)+': ':''))+String(l.text).replace(/\s+/g,' ').slice(0,42):r.sub;
+    return `<div class="croom ${r.room===CHAT.room?'on':''}" data-r="${esc(r.room)}" onclick="openChat(this.dataset.r)">${r.pid?av(r.pid,36):'<span class="cteam">💬</span>'}<div style="min-width:0;flex:1"><div class="cn">${esc(r.name)}</div><div class="cs">${esc(prev)}</div></div>${u?`<span class="cnt">${u}</span>`:''}</div>`;}).join('');
+}
+function chatHeadHTML(){
+  const r=chatRooms().find(x=>x.room===CHAT.room)||chatRooms()[0];
+  return r.pid?`${av(r.pid,38)}<div><b style="font-family:var(--head);font-size:17px">${esc(r.name)}</b><div class="lab">🔒 private · only you two can see this</div></div>`
+    :`<span class="cteam">💬</span><div><b style="font-family:var(--head);font-size:17px">team chat</b><div class="lab">everyone on oonda can see this</div></div>`;
+}
+const linkify=t=>esc(t).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/\n/g,'<br>');
+function chatMsgsHTML(){
+  const l=CHAT.msgs[CHAT.room]||[];
+  if(!l.length)return `<div class="empty" style="margin:auto"><span class="hand">say hi ✿</span>${CHAT.room==='team'?'messages here are seen by everyone':'only the two of you see this conversation'}</div>`;
+  let out='',lastDay='';
+  l.forEach((m,i)=>{
+    const p=l[i-1],n=l[i+1],mine=m.email===meEmail(),k=dayKey(m.ms);
+    if(k!==lastDay){out+=`<div class="dayhd" style="text-align:center">${dayWord(k)}</div>`;lastDay=k;}
+    const head=!p||p.email!==m.email||m.ms-p.ms>5*6e4||dayKey(p.ms)!==k, last=!n||n.email!==m.email||n.ms-m.ms>5*6e4;
+    out+=`<div class="cmsg ${mine?'mine':''} ${head?'gap':''} ${last?'last':''}">${mine?'':(head?av(msgPid(m),30):'<span style="width:30px;flex-shrink:0"></span>')}<div class="cb">${head&&!mine?`<div class="cname">${esc(msgName(m))}</div>`:''}<div class="bub">${linkify(m.text)}</div><div class="ctime">${fT(m.ms)} pht · ${fT(m.ms,CST)} ${cAb(m.ms).toLowerCase()}${mine?` · <button class="cdel" data-r="${esc(CHAT.room)}" data-i="${esc(m.id)}" onclick="delChat(this.dataset.r,this.dataset.i)">delete</button>`:''}</div></div></div>`;
+  });
+  return out;
+}
+function chatInner(){
+  syncChatSubs();
+  if(!chatRooms().some(r=>r.room===CHAT.room))CHAT.room='team';
+  return `<div class="chatbox"><div class="chatside"><div class="ch" style="padding:2px 8px 10px"><h3>chat</h3><span class="lab">${chatRooms().length-1} people</span></div><div id="chatList">${chatListHTML()}</div></div>
+  <div class="chatmain"><div class="chathead" id="chatHead">${chatHeadHTML()}</div><div class="chatmsgs" id="chatMsgs">${chatMsgsHTML()}</div>
+  <div class="chatin"><textarea id="chatTx" rows="1" placeholder="write a message… (enter to send, shift+enter for a new line)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,140)+'px'"></textarea><button class="btn dark" onclick="sendChat()">send 💌</button></div></div></div>`;
+}
+function chatAfter(){const b=$('#chatMsgs');if(!b)return;b.scrollTop=b.scrollHeight;if(document.visibilityState==='visible'){markRead(CHAT.room);const cl=$('#chatList');if(cl)cl.innerHTML=chatListHTML();}chatBadges();}
+function chatRefresh(room){
+  const cl=$('#chatList');if(cl)cl.innerHTML=chatListHTML();
+  if(room===CHAT.room){const b=$('#chatMsgs');if(b){const near=b.scrollHeight-b.scrollTop-b.clientHeight<120;b.innerHTML=chatMsgsHTML();if(near)b.scrollTop=b.scrollHeight;if(document.visibilityState==='visible')markRead(room);}}
+  chatBadges();
+}
+function openChat(room){
+  CHAT.room=room;const w=$('#chatWrap');
+  if(w){const tx=$('#chatTx'),keep=tx?tx.value:'';w.innerHTML=chatInner();const t2=$('#chatTx');if(t2){t2.value=keep;t2.focus();}chatAfter();w.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  else go('chat');
+}
+function sendChat(){
+  const tx=$('#chatTx');if(!tx)return;const t=tx.value.trim();if(!t)return;
+  tx.value='';tx.style.height='auto';const own=CLOUD.role==='owner';
+  roomColl(CHAT.room).add({text:t.slice(0,2000),email:meEmail(),person:own?'me':(CLOUD.person||''),name:own?(S.settings.name||'mae'):(CLOUD.name||rname(CLOUD.person)||CLOUD.user.displayName||''),ms:Date.now(),at:ts0()})
+    .catch(e=>{toast('🙈','message not sent',niceErr(e));tx.value=t;});
+}
+function delChat(room,id){confirmBox('delete this message?','it disappears for everyone in the chat',()=>roomColl(room).doc(id).delete().catch(e=>toast('🙈','couldn\'t delete',niceErr(e))));}
+function chatCard(){setTimeout(chatAfter,0);return `<div class="card" style="padding:0;overflow:hidden"><div id="chatWrap">${chatInner()}</div></div>`;}
+function pChat(){if(!CLOUD.on)return '<div class="card empty"><span class="hand">chat needs logins ✿</span>turn on logins in settings to message the team</div>';return chatCard();}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&$('#chatMsgs')&&CLOUD.on)chatAfter();});
 
 /* activity log */
 const ACT={signin:['🔑','#e6e7dc'],signout:['👋','#eee8e4'],request:['💌','#fbe3e2'],status:['🎨','#efcdc9'],done:['✅','#dfe3d4'],listing:['🏡','#e8d3d8'],studio:['🛋️','#efcdc9'],meeting:['💬','#ebdfe1']};
@@ -1943,7 +2072,7 @@ function listenMine(){
     const pl=$('#pList');if(pl)pl.innerHTML=reqListHTML();
     if(CLOUD.role==='broker')nav();
   },e=>toast('🙈','couldn\'t load your requests',niceErr(e))));
-  CLOUD.unsub.push(CLOUD.db.doc('oonda/public').onSnapshot(s=>{CLOUD.pub=s.exists?s.data():{listings:[],people:[]};const sel=$('#pq_l');if(sel){const v=sel.value;sel.innerHTML=listingOpts();sel.value=v;}},()=>{}));
+  CLOUD.unsub.push(CLOUD.db.doc('oonda/public').onSnapshot(s=>{CLOUD.pub=s.exists?s.data():{listings:[],people:[]};syncChatSubs();{const cl=$('#chatList');if(cl)cl.innerHTML=chatListHTML();}const sel=$('#pq_l');if(sel){const v=sel.value;sel.innerHTML=listingOpts();sel.value=v;}},()=>{}));
 }
 function announce(r){
   const m={received:['📥','Mae got your request'],doing:['🎨','Mae is working on it'],review:['👀','ready for your review'],done:['🌷','done ✿'],closed:['🗂️','request closed']}[r.status];if(!m)return;
@@ -1989,7 +2118,7 @@ function renderPortal(){
   p.innerHTML=`<div class="row" style="margin-bottom:26px;flex-wrap:wrap"><div class="brand" style="padding:0">${logo(36)}<b>oonda<span class="ast">𖹭</span></b></div><div class="row" style="gap:10px"><span class="lab">${esc(CLOUD.user.email)}</span><span style="cursor:pointer" onclick="acctMenu()">${av(CLOUD.person||name,44)}</span></div></div>
   <div class="lab">${fmt(now,{weekday:'long',month:'long',day:'numeric'}).toLowerCase()} · ${fT(now,CST)} ${cAb(now).toLowerCase()} · ${fT(now)} pht</div>
   <h1 class="h1">hi, ${esc(name)}<span class="ast">𖹭</span></h1><div class="sub">send Mae a request and watch it move — you'll get a pop-up whenever it changes</div>
-  <div class="grid mt20">${reqFormHTML()}<div class="card s7" id="pList">${reqListHTML()}</div></div>${actCard()}`;
+  <div class="grid mt20">${reqFormHTML()}<div class="card s7" id="pList">${reqListHTML()}</div></div><div class="mt20">${chatCard()}</div>${actCard()}`;
 }
 function pMine(){return CLOUD.on?`<div class="grid">${reqFormHTML()}<div class="card s7" id="pList">${reqListHTML()}</div></div>`:'<div class="card empty">logins are off</div>';}
 
