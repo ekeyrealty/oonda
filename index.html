@@ -470,6 +470,57 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 .cdel{border:0;background:none;color:var(--deeprose);font-family:var(--mono);font-size:10px;cursor:pointer;padding:0}
 .chatin{display:flex;gap:10px;align-items:flex-end;padding:12px 16px;box-shadow:0 -1px 0 rgba(235,223,225,.7)}
 .chatin textarea{flex:1;border:0;outline:0;resize:none;background:#f8eeea;border-radius:18px;padding:11px 16px;font-family:var(--body);font-size:14px;color:var(--ink);max-height:140px;transition:box-shadow .2s,background .2s}
+.avw{position:relative;display:inline-flex;flex-shrink:0}
+.odot{position:absolute;right:0;bottom:0;width:10px;height:10px;border-radius:50%;background:#8fb08a;box-shadow:0 0 0 2.5px var(--paper)}
+.avs .avw{margin-left:-9px}.avs .avw:first-child{margin-left:0}
+.ontxt{color:#6f8f6a;font-weight:700}
+.csearch{position:relative;margin:0 4px 10px}
+.csearch input{width:100%;border:0;outline:0;background:var(--paper);border-radius:99px;padding:9px 30px 9px 14px;font-family:var(--body);font-size:13px;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(235,223,225,.9);transition:box-shadow .2s}
+.csearch input:focus{box-shadow:0 0 0 3px rgba(217,143,151,.28)}
+.csearch button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--muted);cursor:pointer;font-size:12px;padding:4px 6px}
+.csearch input:placeholder-shown+button{display:none}
+.sres mark{background:#f6d6da;color:inherit;border-radius:4px;padding:0 2px}
+.croom .cnt.at{background:#e9b04f;margin-right:4px}
+.cmsg{position:relative}
+.cb{position:relative}
+.cact{position:absolute;top:-17px;right:-6px;z-index:3;display:none;gap:1px;align-items:center;background:var(--paper);border-radius:99px;padding:3px 5px;box-shadow:var(--sh2)}
+.cmsg.mine .cact{right:auto;left:-6px}
+.cmsg:hover .cact,.cmsg.sh .cact{display:flex}
+.cact button{border:0;background:none;cursor:pointer;font-size:14px;width:28px;height:26px;border-radius:99px;display:grid;place-items:center;transition:background .15s,transform .15s}
+.cact button:hover{background:var(--blush);transform:scale(1.15)}
+.cact i{width:1px;height:16px;background:var(--blush2);margin:0 3px}
+.bub .mt{color:var(--deeprose);font-weight:800}
+.bub .mt.me{background:#fbe3c4;color:#9a5c1c;border-radius:6px;padding:0 3px}
+.cmsg.atme .bub{box-shadow:inset 0 0 0 2px #efc68a}
+.pinmk{float:right;font-size:11px;margin:-2px -6px 0 6px}
+.ed{font-family:var(--mono);font-size:10px;color:var(--muted);margin-left:6px}
+.cmsg.mine .ed{color:#8a5d66}
+.rq{display:block;border-left:3px solid var(--deeprose);background:rgba(255,255,255,.55);border-radius:8px 10px 10px 8px;padding:5px 10px;margin:0 0 6px;font-size:12.5px;color:#6f5c60;cursor:pointer;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rq b{display:block;font-size:11.5px;color:var(--deeprose)}
+.rxs{display:flex;gap:4px;flex-wrap:wrap;margin:4px 6px 0}
+.rxc{border:0;background:var(--paper);box-shadow:inset 0 0 0 1px var(--blush2);border-radius:99px;padding:2px 8px;font-size:12px;font-family:var(--mono);cursor:pointer;color:var(--ink);transition:transform .15s}
+.rxc:hover{transform:scale(1.07)}
+.rxc.on{background:var(--blush);box-shadow:inset 0 0 0 1.5px var(--rose)}
+.donetag{color:#6f8f6a;font-weight:700}
+.cmsg.flash .bub{animation:cflash 1.6s ease}
+@keyframes cflash{0%,40%{box-shadow:0 0 0 4px rgba(233,176,79,.55)}100%{box-shadow:0 0 0 0 rgba(233,176,79,0)}}
+.cseen{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin:6px 8px 0;display:flex;align-items:center;min-height:14px}
+.cseen.mine{justify-content:flex-end}
+.cseen .avi{box-shadow:0 0 0 2px var(--paper)}
+.pinbar{display:flex;gap:10px;align-items:center;padding:9px 20px;background:#fdf3ef;cursor:pointer;font-size:13px}
+.pinbar .cs{color:var(--muted)}
+.pinlist{max-height:220px;overflow:auto;background:#fdf3ef;padding:0 14px 10px}
+.pinit{display:flex;gap:10px;align-items:center;background:var(--paper);border-radius:14px;padding:8px 12px;margin-top:6px}
+.pinit .ptx{font-size:13.5px;overflow-wrap:anywhere}
+.cctx{display:flex;gap:10px;align-items:center;margin:0 16px;padding:8px 12px;background:#fdf3ef;border-radius:14px 14px 0 0;font-size:13px}
+.cctx .cs{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cctx .x{border:0;background:none;cursor:pointer;color:var(--muted)}
+.chatin{position:relative}
+.chatac{position:absolute;left:16px;bottom:calc(100% - 4px);background:var(--paper);border-radius:16px;box-shadow:var(--sh2);padding:6px;display:none;min-width:220px;z-index:5}
+.chatac.on{display:block}
+.aci{display:flex;gap:8px;align-items:center;padding:6px 10px;border-radius:11px;cursor:pointer;font-size:13.5px}
+.aci.on,.aci:hover{background:var(--blush)}
+.toast.mention .ti{background:#fbe3c4}
 .chatin textarea:focus{box-shadow:0 0 0 3px rgba(217,143,151,.3);background:#fff}
 @media (max-width:900px){.chatbox{grid-template-columns:1fr;height:auto}.chatside{max-height:210px}.chatmsgs{height:55vh}}
 /* activity */
@@ -1763,9 +1814,11 @@ service cloud.firestore {
     match /access/{email} { allow read: if signedIn() && email == me(); allow write: if isOwner(); }
     // listing names + people for the request form
     match /oonda/public { allow read: if isOwner() || isMember(); allow write: if isOwner(); }
-    // chat: team room everyone on oonda reads; private rooms only the two people in the room id; you can delete only your own messages
-    match /chat/{id} { allow read: if isOwner() || isMember(); allow create: if (isOwner() || isMember()) && request.resource.data.email == me(); allow delete: if signedIn() && resource.data.email == me(); allow update: if false; }
-    match /dms/{room}/msgs/{id} { allow read: if (isOwner() || isMember()) && me() in room.split('~'); allow create: if (isOwner() || isMember()) && me() in room.split('~') && request.resource.data.email == me(); allow delete: if signedIn() && resource.data.email == me(); allow update: if false; }
+    // chat: team room everyone on oonda reads; private rooms only the two people in the room id; edit/delete only your own messages; anyone in the room can react or pin
+    match /chat/{id} { allow read: if isOwner() || isMember(); allow create: if (isOwner() || isMember()) && request.resource.data.email == me(); allow delete: if signedIn() && resource.data.email == me(); allow update: if (isOwner() || isMember()) && ((resource.data.email == me() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['text', 'mentions', 'edited', 'editedMs'])) || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rx']) || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['pinned', 'pinnedBy', 'pinnedMs'])); }
+    match /dms/{room}/msgs/{id} { allow read: if (isOwner() || isMember()) && me() in room.split('~'); allow create: if (isOwner() || isMember()) && me() in room.split('~') && request.resource.data.email == me(); allow delete: if signedIn() && resource.data.email == me(); allow update: if me() in room.split('~') && (isOwner() || isMember()) && ((resource.data.email == me() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['text', 'mentions', 'edited', 'editedMs'])) || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rx']) || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['pinned', 'pinnedBy', 'pinnedMs'])); }
+    // online dot + "seen": each person only writes their own
+    match /presence/{email} { allow read: if isOwner() || isMember(); allow write: if (isOwner() || isMember()) && email == me(); }
     // activity log: everyone signed in can read; each person only adds entries as themselves; nobody can edit or delete
     match /activity/{id} { allow read: if isOwner() || isMember(); allow create: if (isOwner() || isMember()) && request.resource.data.email == me(); allow update, delete: if false; }
     // requests: people send their own and only see their own; Mae + Eric see all
@@ -1927,12 +1980,14 @@ async function saveAccess(){
   }catch(e){toast('🙈','couldn\'t save access',niceErr(e));}
 }
 
-/* chat: team room + private 1:1 messages */
+/* chat: team room + private 1:1 messages, with mentions, reactions, replies, pins, search, edits, seen + online */
 ICONS.chat='<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h7A2.5 2.5 0 0 1 16 6.5v4a2.5 2.5 0 0 1-2.5 2.5H9l-3.5 3v-3A2.5 2.5 0 0 1 4 10.5z"/><path d="M16 9h1.5A2.5 2.5 0 0 1 20 11.5v4a2.5 2.5 0 0 1-2.5 2.5V21L14 18h-2.5A2.5 2.5 0 0 1 9 16"/>';
-const CHAT={room:'team',msgs:{},subs:{},first:{},read:{}};
+const CHAT={room:'team',msgs:{},subs:{},pins:{},first:{},read:{},pres:{},presOn:false,reply:null,edit:null,q:'',pinOpen:false,ac:null};
+const RX=['❤️','👍','✅'];
 const meEmail=()=>CLOUD.user?CLOUD.user.email.toLowerCase():'';
 const ownerEm=()=>String(SETUP.ownerEmail||'').toLowerCase();
 const cap=s=>s?String(s)[0].toUpperCase()+String(s).slice(1):s;
+const escRe=s=>String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 function chatReadLoad(){try{CHAT.read=JSON.parse(localStorage.getItem('oonda.chatread.'+CLOUD.user.uid)||'{}');}catch(e){CHAT.read={};}}
 function chatReadSave(){try{localStorage.setItem('oonda.chatread.'+CLOUD.user.uid,JSON.stringify(CHAT.read));}catch(e){}}
 function emailOfPid(pid){if(pid==='me')return ownerEm();const e=Object.entries(CLOUD.roles||{}).find(([em,v])=>v.person===pid);return e?e[0]:'';}
@@ -1942,87 +1997,273 @@ function chatPeople(){
   else ppl=((CLOUD.pub&&CLOUD.pub.people)||[]).map(p=>({pid:p.id,name:p.name,email:String(p.email||'').toLowerCase()}));
   return ppl.filter(p=>p.email&&p.email!==me);
 }
+const myName=()=>CLOUD.role==='owner'?(S.settings.name||'mae'):(CLOUD.name||rname(CLOUD.person)||(CLOUD.user&&CLOUD.user.displayName)||'');
 const dmRoom=em=>'dm:'+[meEmail(),em].sort().join('~');
 const roomColl=room=>room==='team'?CLOUD.db.collection('chat'):CLOUD.db.collection('dms').doc(room.slice(3)).collection('msgs');
 const chatViewing=room=>!!$('#chatMsgs')&&CHAT.room===room&&document.visibilityState==='visible';
+const findMsg=(room,id)=>(CHAT.msgs[room]||[]).find(m=>m.id===id)||(CHAT.pins[room]||[]).find(m=>m.id===id);
+const mentionsMe=m=>Array.isArray(m.mentions)&&m.mentions.includes(meEmail());
+
+/* ---- live data ---- */
 function subRoom(room){
   if(CHAT.subs[room])return;
   if(CHAT.read[room]===undefined){CHAT.read[room]=room==='team'?Date.now():0;chatReadSave();}
   CHAT.first[room]=true;
   CHAT.subs[room]=roomColl(room).orderBy('ms','desc').limit(200).onSnapshot(qs=>{
-    if(!CHAT.first[room])qs.docChanges().forEach(c=>{if(c.type!=='added')return;const m=c.doc.data();if(m.email!==meEmail()&&!chatViewing(room))chatPing(room,m);});
+    const old={};(CHAT.msgs[room]||[]).forEach(m=>old[m.id]=m);
+    if(!CHAT.first[room])qs.docChanges().forEach(c=>{
+      const m=c.doc.data();
+      if(c.type==='added'){if(m.email!==meEmail()&&!chatViewing(room))chatPing(room,m);}
+      else if(c.type==='modified')chatModPing(room,old[c.doc.id],m);
+    });
     CHAT.first[room]=false;
     CHAT.msgs[room]=qs.docs.map(d=>Object.assign({id:d.id},d.data())).reverse();
     chatRefresh(room);
   },e=>console.warn('chat',e));
   CLOUD.unsub.push(CHAT.subs[room]);
+  CLOUD.unsub.push(roomColl(room).where('pinned','==',true).onSnapshot(qs=>{
+    CHAT.pins[room]=qs.docs.map(d=>Object.assign({id:d.id},d.data())).sort((a,b)=>(b.pinnedMs||0)-(a.pinnedMs||0));
+    if(room===CHAT.room){const pb=$('#chatPins');if(pb)pb.innerHTML=pinsHTML();}
+  },e=>console.warn('pins',e)));
 }
 function syncChatSubs(){if(!CLOUD.on||!CLOUD.user||!CLOUD.db)return;subRoom('team');chatPeople().forEach(p=>subRoom(dmRoom(p.email)));}
-function startChat(){chatReadLoad();syncChatSubs();}
-const msgName=m=>m.email===ownerEm()?cap(S.settings.name&&CLOUD.role==='owner'?S.settings.name:'mae'):(P(m.person)?rname(m.person):(m.name||m.email));
+function startChat(){chatReadLoad();syncChatSubs();startPresence();}
+
+/* ---- presence: online dot, last seen, read receipts ---- */
+let presAt=0,presTimer=null;
+function pushPresence(now){
+  if(!CLOUD.on||!CLOUD.user||!CLOUD.db)return;
+  const t=Date.now();
+  if(!now&&t-presAt<4000){clearTimeout(presTimer);presTimer=setTimeout(()=>pushPresence(true),4000-(t-presAt));return;}
+  presAt=t;clearTimeout(presTimer);
+  CLOUD.db.collection('presence').doc(meEmail()).set({ms:t,name:myName(),read:CHAT.read},{merge:true}).catch(e=>console.warn('presence',e));
+}
+function startPresence(){
+  if(CHAT.presOn||!CLOUD.on||!CLOUD.db)return;CHAT.presOn=true;
+  CLOUD.unsub.push(CLOUD.db.collection('presence').onSnapshot(qs=>{
+    const p={};qs.docs.forEach(d=>p[d.id]=d.data());CHAT.pres=p;
+    const mine=p[meEmail()];let ch=false;
+    if(mine&&mine.read)Object.entries(mine.read).forEach(([k,v])=>{if(v>(CHAT.read[k]||0)){CHAT.read[k]=v;ch=true;}});
+    if(ch)chatReadSave();
+    presUI();
+  },e=>console.warn('presence',e)));
+  pushPresence(true);
+  setInterval(()=>{if(document.visibilityState==='visible')pushPresence(true);},60000);
+}
+const isOnline=em=>{const p=CHAT.pres[em];return !!p&&Date.now()-p.ms<150000;};
+function lastSeen(em){const p=CHAT.pres[em];if(!p)return 'not on oonda yet';if(isOnline(em))return 'online now';return 'last seen '+(Date.now()-p.ms<864e5?dur(Date.now()-p.ms)+' ago':dayWord(dayKey(p.ms))+' '+fT(p.ms)+' pht');}
+const readOf=(em,room)=>{const p=CHAT.pres[em];return p&&p.read?(p.read[room]||0):0;};
+function avDot(pid,size,em){return `<span class="avw">${av(pid,size)}${em&&isOnline(em)?'<i class="odot"></i>':''}</span>`;}
+function presUI(){
+  const cl=$('#chatList');if(cl&&!CHAT.q)cl.innerHTML=chatListHTML();
+  const h=$('#chatHead');if(h)h.innerHTML=chatHeadHTML();
+  const s=$('#chatSeen');if(s)s.outerHTML=seenHTML();
+}
+function seenHTML(){
+  const l=CHAT.msgs[CHAT.room]||[],last=l[l.length-1];
+  if(!last)return '<div id="chatSeen"></div>';
+  const mine=last.email===meEmail();let inner='';
+  if(CHAT.room==='team'){
+    const who=chatPeople().filter(p=>p.email!==last.email&&readOf(p.email,'team')>=last.ms);
+    if(who.length)inner=`seen by <span class="avs" style="margin-left:6px">${who.slice(0,7).map(p=>av(p.pid,18)).join('')}</span>`;
+  }else if(mine){
+    const other=chatPeople().find(p=>dmRoom(p.email)===CHAT.room);const r=other?readOf(other.email,CHAT.room):0;
+    if(r>=last.ms)inner=`seen ✓✓ · ${fT(r)} pht`;
+  }
+  return `<div id="chatSeen" class="cseen ${mine?'mine':''}">${inner}</div>`;
+}
+
+/* ---- notifications ---- */
+function msgName(m){return m.email===ownerEm()?cap(S.settings.name&&CLOUD.role==='owner'?S.settings.name:'mae'):(P(m.person)?rname(m.person):(m.name||m.email));}
 const msgPid=m=>m.email===ownerEm()?'me':(m.person||m.email);
-function chatPing(room,m){
-  const who=msgName(m);
-  toast('💬',room==='team'?who+' · team chat':who,String(m.text).slice(0,120),'auto',`<button class="btn sm rose" data-r="${esc(room)}" onclick="openChat(this.dataset.r);this.closest('.toast').remove()">reply</button>`,9000);
-  chime();
-  if('Notification' in window&&Notification.permission==='granted'&&document.visibilityState!=='visible'){try{new Notification('oonda · '+who,{body:String(m.text).slice(0,120)});}catch(e){}}
+function chatPing(room,m,force){
+  const who=msgName(m),at=mentionsMe(m)||force;
+  const btn=`<button class="btn sm rose" data-r="${esc(room)}" data-i="${esc(m.id||'')}" onclick="openChat(this.dataset.r,this.dataset.i);this.closest('.toast').remove()">${at?'open':'reply'}</button>`;
+  if(at)toast('📣',who+' mentioned you'+(room==='team'?' · team chat':''),String(m.text).slice(0,160),'mention',btn,20000);
+  else toast('💬',room==='team'?who+' · team chat':who,String(m.text).slice(0,120),'auto',btn,9000);
+  chime();if(at)setTimeout(chime,420);
+  if('Notification' in window&&Notification.permission==='granted'&&(document.visibilityState!=='visible'||at)){try{new Notification('oonda · '+(at?who+' mentioned you':who),{body:String(m.text).slice(0,120),requireInteraction:!!at});}catch(e){}}
+}
+function chatModPing(room,o,m){
+  if(!o)return;
+  if(m.email!==meEmail()&&mentionsMe(m)&&!mentionsMe(o)&&!chatViewing(room))chatPing(room,Object.assign({},m),true);
+  if(o.email===meEmail()&&m.email===meEmail()){
+    RX.forEach(e=>{const was=(o.rx&&o.rx[e])||[],now=(m.rx&&m.rx[e])||[];now.filter(x=>!was.includes(x)&&x!==meEmail()).forEach(x=>{
+      const p=chatPeople().find(q=>q.email===x);toast(e,(p?cap(p.name):x)+' reacted '+e,String(m.text).slice(0,90),'',`<button class="btn sm" data-r="${esc(room)}" onclick="openChat(this.dataset.r);this.closest('.toast').remove()">open</button>`,6000);});});
+    if(m.pinned&&!o.pinned&&m.pinnedBy&&m.pinnedBy!==myName())toast('📌',cap(m.pinnedBy)+' pinned your message',String(m.text).slice(0,90),'','',6000);
+  }
 }
 const unread=room=>(CHAT.msgs[room]||[]).filter(m=>m.email!==meEmail()&&m.ms>(CHAT.read[room]||0)).length;
+const unreadAt=room=>(CHAT.msgs[room]||[]).some(m=>m.email!==meEmail()&&m.ms>(CHAT.read[room]||0)&&mentionsMe(m));
 const chatUnreadTotal=()=>Object.keys(CHAT.subs).reduce((a,r)=>a+unread(r),0);
-function markRead(room){const l=CHAT.msgs[room]||[];CHAT.read[room]=Math.max(CHAT.read[room]||0,Date.now(),l.length?l[l.length-1].ms:0);chatReadSave();}
+function markRead(room){const l=CHAT.msgs[room]||[];const v=Math.max(CHAT.read[room]||0,Date.now(),l.length?l[l.length-1].ms:0);if(v-(CHAT.read[room]||0)>1000){CHAT.read[room]=v;chatReadSave();pushPresence();}}
 function chatBadges(){const n=chatUnreadTotal();document.title=n?`(${n}) oonda`:'oonda';if(CLOUD.role!=='requester'&&appStarted)nav();}
-function chatRooms(){return [{room:'team',name:'team chat',sub:'everyone on oonda',pid:null},...chatPeople().map(p=>({room:dmRoom(p.email),name:cap(p.name),sub:'private',pid:p.pid}))];}
+
+/* ---- rendering ---- */
+function chatRooms(){return [{room:'team',name:'team chat',sub:'everyone on oonda',pid:null},...chatPeople().map(p=>({room:dmRoom(p.email),name:cap(p.name),sub:'private',pid:p.pid,email:p.email}))];}
 function chatListHTML(){
-  return chatRooms().map(r=>{const u=r.room===CHAT.room?0:unread(r.room),l=(CHAT.msgs[r.room]||[]).slice(-1)[0];
-    const prev=l?(l.email===meEmail()?'you: ':(r.room==='team'?msgName(l)+': ':''))+String(l.text).replace(/\s+/g,' ').slice(0,42):r.sub;
-    return `<div class="croom ${r.room===CHAT.room?'on':''}" data-r="${esc(r.room)}" onclick="openChat(this.dataset.r)">${r.pid?av(r.pid,36):'<span class="cteam">💬</span>'}<div style="min-width:0;flex:1"><div class="cn">${esc(r.name)}</div><div class="cs">${esc(prev)}</div></div>${u?`<span class="cnt">${u}</span>`:''}</div>`;}).join('');
+  if(CHAT.q)return searchHTML();
+  return chatRooms().map(r=>{const u=r.room===CHAT.room?0:unread(r.room),at=r.room!==CHAT.room&&unreadAt(r.room),l=(CHAT.msgs[r.room]||[]).slice(-1)[0];
+    const prev=l?(l.email===meEmail()?'you: ':(r.room==='team'?msgName(l)+': ':''))+String(l.text).replace(/\s+/g,' ').slice(0,42):(r.email?lastSeen(r.email):r.sub);
+    return `<div class="croom ${r.room===CHAT.room?'on':''}" data-r="${esc(r.room)}" onclick="openChat(this.dataset.r)">${r.pid?avDot(r.pid,36,r.email):'<span class="cteam">💬</span>'}<div style="min-width:0;flex:1"><div class="cn">${esc(r.name)}</div><div class="cs">${esc(prev)}</div></div>${at?'<span class="cnt at">@</span>':''}${u?`<span class="cnt">${u}</span>`:''}</div>`;}).join('');
 }
 function chatHeadHTML(){
   const r=chatRooms().find(x=>x.room===CHAT.room)||chatRooms()[0];
-  return r.pid?`${av(r.pid,38)}<div><b style="font-family:var(--head);font-size:17px">${esc(r.name)}</b><div class="lab">🔒 private · only you two can see this</div></div>`
-    :`<span class="cteam">💬</span><div><b style="font-family:var(--head);font-size:17px">team chat</b><div class="lab">everyone on oonda can see this</div></div>`;
+  if(r.pid)return `${avDot(r.pid,38,r.email)}<div><b style="font-family:var(--head);font-size:17px">${esc(r.name)}</b><div class="lab">${isOnline(r.email)?'<span class="ontxt">● online now</span>':esc(lastSeen(r.email))} · 🔒 only you two see this</div></div>`;
+  const on=chatPeople().filter(p=>isOnline(p.email));
+  return `<span class="cteam">💬</span><div style="flex:1"><b style="font-family:var(--head);font-size:17px">team chat</b><div class="lab">everyone on oonda can see this${on.length?` · <span class="ontxt">● ${on.length} online</span>`:''}</div></div>${on.length?`<span class="avs">${on.slice(0,6).map(p=>avDot(p.pid,26,p.email)).join('')}</span>`:''}`;
 }
-const linkify=t=>esc(t).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/\n/g,'<br>');
+function linkify(t){
+  const names=chatPeople().map(p=>p.name).concat([myName(),'everyone']).filter(Boolean);
+  let h=esc(t);
+  if(names.length){const re=new RegExp('(^|\\s)@('+names.map(escRe).sort((a,b)=>b.length-a.length).join('|')+')(?![\\w])','gi');
+    h=h.replace(re,(x,s,n)=>`${s}<b class="mt${n.toLowerCase()===String(myName()).toLowerCase()||n.toLowerCase()==='everyone'?' me':''}">@${n}</b>`);}
+  return h.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/\n/g,'<br>');
+}
+function rxHTML(room,m){
+  const rx=m.rx||{};const chips=RX.filter(e=>(rx[e]||[]).length).map(e=>{const l=rx[e],mine=l.includes(meEmail());
+    const who=l.map(x=>x===meEmail()?'you':((chatPeople().find(p=>p.email===x)||{}).name||x)).join(', ');
+    return `<button class="rxc ${mine?'on':''}" title="${esc(who)}" data-r="${esc(room)}" data-i="${esc(m.id)}" data-e="${e}" onclick="toggleRx(this.dataset.r,this.dataset.i,this.dataset.e)">${e} ${l.length}</button>`;}).join('');
+  return chips?`<div class="rxs">${chips}</div>`:'';
+}
+function actHTML(room,m,mine){
+  const d=`data-r="${esc(room)}" data-i="${esc(m.id)}"`;
+  return `<div class="cact">${RX.map(e=>`<button ${d} data-e="${e}" title="react ${e}" onclick="toggleRx(this.dataset.r,this.dataset.i,this.dataset.e)">${e}</button>`).join('')}<i></i><button ${d} title="reply" onclick="startReply(this.dataset.r,this.dataset.i)">↩</button><button ${d} title="${m.pinned?'unpin':'pin'}" onclick="togglePin(this.dataset.r,this.dataset.i)">${m.pinned?'📍':'📌'}</button>${mine?`<button ${d} title="edit" onclick="startEdit(this.dataset.r,this.dataset.i)">✎</button><button ${d} title="delete" onclick="delChat(this.dataset.r,this.dataset.i)">🗑</button>`:''}</div>`;
+}
 function chatMsgsHTML(){
   const l=CHAT.msgs[CHAT.room]||[];
-  if(!l.length)return `<div class="empty" style="margin:auto"><span class="hand">say hi ✿</span>${CHAT.room==='team'?'messages here are seen by everyone':'only the two of you see this conversation'}</div>`;
+  if(!l.length)return `<div class="empty" style="margin:auto"><span class="hand">say hi ✿</span>${CHAT.room==='team'?'messages here are seen by everyone · type @ to mention someone':'only the two of you see this conversation'}</div>`;
   let out='',lastDay='';
   l.forEach((m,i)=>{
     const p=l[i-1],n=l[i+1],mine=m.email===meEmail(),k=dayKey(m.ms);
     if(k!==lastDay){out+=`<div class="dayhd" style="text-align:center">${dayWord(k)}</div>`;lastDay=k;}
-    const head=!p||p.email!==m.email||m.ms-p.ms>5*6e4||dayKey(p.ms)!==k, last=!n||n.email!==m.email||n.ms-m.ms>5*6e4;
-    out+=`<div class="cmsg ${mine?'mine':''} ${head?'gap':''} ${last?'last':''}">${mine?'':(head?av(msgPid(m),30):'<span style="width:30px;flex-shrink:0"></span>')}<div class="cb">${head&&!mine?`<div class="cname">${esc(msgName(m))}</div>`:''}<div class="bub">${linkify(m.text)}</div><div class="ctime">${fT(m.ms)} pht · ${fT(m.ms,CST)} ${cAb(m.ms).toLowerCase()}${mine?` · <button class="cdel" data-r="${esc(CHAT.room)}" data-i="${esc(m.id)}" onclick="delChat(this.dataset.r,this.dataset.i)">delete</button>`:''}</div></div></div>`;
+    const head=!p||p.email!==m.email||m.ms-p.ms>5*6e4||dayKey(p.ms)!==k||!!m.reply, last=!n||n.email!==m.email||n.ms-m.ms>5*6e4;
+    const done=m.rx&&(m.rx['✅']||[]).length;
+    const rq=m.reply?`<div class="rq" data-i="${esc(m.reply.id)}" onclick="jumpMsg(this.dataset.i)"><b>↩ ${esc(m.reply.name)}</b>${esc(String(m.reply.text).slice(0,120))}</div>`:'';
+    out+=`<div class="cmsg ${mine?'mine':''} ${head?'gap':''} ${last?'last':''} ${mentionsMe(m)&&!mine?'atme':''}" data-mid="${esc(m.id)}">${mine?'':(head?av(msgPid(m),30):'<span style="width:30px;flex-shrink:0"></span>')}<div class="cb">${head&&!mine?`<div class="cname">${esc(msgName(m))}</div>`:''}${actHTML(CHAT.room,m,mine)}<div class="bub" onclick="if(!event.target.closest('a,.rq'))this.closest('.cmsg').classList.toggle('sh')">${m.pinned?'<span class="pinmk" title="pinned">📌</span>':''}${rq}${linkify(m.text)}${m.edited?'<span class="ed">edited</span>':''}</div>${rxHTML(CHAT.room,m)}<div class="ctime">${fT(m.ms)} pht · ${fT(m.ms,CST)} ${cAb(m.ms).toLowerCase()}${done?' · <span class="donetag">✅ done</span>':''}</div></div></div>`;
   });
-  return out;
+  return out+seenHTML();
+}
+function pinsHTML(){
+  const l=CHAT.pins[CHAT.room]||[];if(!l.length)return '';
+  const top=`<div class="pinbar" onclick="CHAT.pinOpen=!CHAT.pinOpen;$('#chatPins').innerHTML=pinsHTML()"><span>📌</span><div style="flex:1;min-width:0"><b>${l.length} pinned</b> <span class="cs" style="display:inline">· ${esc(String(l[0].text).replace(/\s+/g,' ').slice(0,70))}</span></div><span class="lab">${CHAT.pinOpen?'hide':'show'}</span></div>`;
+  if(!CHAT.pinOpen)return top;
+  return top+`<div class="pinlist">${l.map(m=>`<div class="pinit"><div style="flex:1;min-width:0;cursor:pointer" data-i="${esc(m.id)}" onclick="jumpMsg(this.dataset.i)"><div class="lab">${esc(msgName(m))} · ${dayWord(dayKey(m.ms))}${m.pinnedBy?' · pinned by '+esc(m.pinnedBy):''}</div><div class="ptx">${linkify(m.text)}</div></div><button class="btn sm ghost" data-r="${esc(CHAT.room)}" data-i="${esc(m.id)}" onclick="togglePin(this.dataset.r,this.dataset.i)">unpin</button></div>`).join('')}</div>`;
+}
+function searchHTML(){
+  const q=CHAT.q.toLowerCase(),rooms=chatRooms(),res=[];
+  rooms.forEach(r=>(CHAT.msgs[r.room]||[]).forEach(m=>{if(String(m.text).toLowerCase().includes(q)||msgName(m).toLowerCase().includes(q))res.push([r,m]);}));
+  res.sort((a,b)=>b[1].ms-a[1].ms);
+  if(!res.length)return `<div class="empty" style="padding:18px 8px"><span class="hand" style="font-size:19px">nothing found</span>no messages with “${esc(CHAT.q)}”</div>`;
+  const hi=t=>{const s=String(t).replace(/\s+/g,' '),i=s.toLowerCase().indexOf(q);if(i<0)return esc(s.slice(0,70));const a=Math.max(0,i-24);return (a?'…':'')+esc(s.slice(a,i))+'<mark>'+esc(s.slice(i,i+q.length))+'</mark>'+esc(s.slice(i+q.length,i+q.length+46));};
+  return `<div class="lab" style="padding:0 10px 6px">${res.length>40?'40 of '+res.length:res.length} found</div>`+res.slice(0,40).map(([r,m])=>`<div class="croom sres" data-r="${esc(r.room)}" data-i="${esc(m.id)}" onclick="openChat(this.dataset.r,this.dataset.i)"><div style="min-width:0;flex:1"><div class="cs"><b>${esc(r.name)}</b> · ${esc(msgName(m))} · ${dayWord(dayKey(m.ms))}</div><div class="cn" style="font-weight:600;white-space:normal">${hi(m.text)}</div></div></div>`).join('');
+}
+function ctxHTML(){
+  if(CHAT.edit)return `<div class="cctx"><span>✎</span><div style="flex:1;min-width:0"><b>editing your message</b><div class="cs">enter to save · esc to cancel</div></div><button class="x" onclick="cancelCtx()">✕</button></div>`;
+  if(CHAT.reply)return `<div class="cctx"><span>↩</span><div style="flex:1;min-width:0"><b>replying to ${esc(CHAT.reply.name)}</b><div class="cs">${esc(String(CHAT.reply.text).replace(/\s+/g,' ').slice(0,90))}</div></div><button class="x" onclick="cancelCtx()">✕</button></div>`;
+  return '';
 }
 function chatInner(){
   syncChatSubs();
   if(!chatRooms().some(r=>r.room===CHAT.room))CHAT.room='team';
-  return `<div class="chatbox"><div class="chatside"><div class="ch" style="padding:2px 8px 10px"><h3>chat</h3><span class="lab">${chatRooms().length-1} people</span></div><div id="chatList">${chatListHTML()}</div></div>
-  <div class="chatmain"><div class="chathead" id="chatHead">${chatHeadHTML()}</div><div class="chatmsgs" id="chatMsgs">${chatMsgsHTML()}</div>
-  <div class="chatin"><textarea id="chatTx" rows="1" placeholder="write a message… (enter to send, shift+enter for a new line)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,140)+'px'"></textarea><button class="btn dark" onclick="sendChat()">send 💌</button></div></div></div>`;
+  return `<div class="chatbox"><div class="chatside"><div class="ch" style="padding:2px 8px 8px"><h3>chat</h3><span class="lab">${chatRooms().length-1} people</span></div><div class="csearch"><input id="chatQ" placeholder="🔍 search messages" value="${esc(CHAT.q)}" oninput="chatSearch(this.value)"><button title="clear" onclick="$('#chatQ').value='';chatSearch('')">✕</button></div><div id="chatList">${chatListHTML()}</div></div>
+  <div class="chatmain"><div class="chathead" id="chatHead">${chatHeadHTML()}</div><div id="chatPins">${pinsHTML()}</div><div class="chatmsgs" id="chatMsgs">${chatMsgsHTML()}</div>
+  <div id="chatCtx">${ctxHTML()}</div><div class="chatin"><div id="chatAc" class="chatac"></div><textarea id="chatTx" rows="1" placeholder="write a message… (@ to mention, enter to send, shift+enter for a new line)" onkeydown="chatKey(event)" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,140)+'px';chatAcUpd()" onblur="setTimeout(chatAcClose,150)"></textarea><button class="btn dark" onclick="sendChat()">send 💌</button></div></div></div>`;
 }
-function chatAfter(){const b=$('#chatMsgs');if(!b)return;b.scrollTop=b.scrollHeight;if(document.visibilityState==='visible'){markRead(CHAT.room);const cl=$('#chatList');if(cl)cl.innerHTML=chatListHTML();}chatBadges();}
+function chatAfter(){const b=$('#chatMsgs');if(!b)return;b.scrollTop=b.scrollHeight;if(document.visibilityState==='visible'){markRead(CHAT.room);const cl=$('#chatList');if(cl&&!CHAT.q)cl.innerHTML=chatListHTML();}chatBadges();}
 function chatRefresh(room){
   const cl=$('#chatList');if(cl)cl.innerHTML=chatListHTML();
-  if(room===CHAT.room){const b=$('#chatMsgs');if(b){const near=b.scrollHeight-b.scrollTop-b.clientHeight<120;b.innerHTML=chatMsgsHTML();if(near)b.scrollTop=b.scrollHeight;if(document.visibilityState==='visible')markRead(room);}}
+  if(room===CHAT.room){const b=$('#chatMsgs');if(b){const near=b.scrollHeight-b.scrollTop-b.clientHeight<120,top=b.scrollTop;b.innerHTML=chatMsgsHTML();b.scrollTop=near?b.scrollHeight:top;if(document.visibilityState==='visible')markRead(room);}}
   chatBadges();
 }
-function openChat(room){
+function openChat(room,jump){
+  if(room!==CHAT.room){CHAT.reply=null;CHAT.edit=null;CHAT.pinOpen=false;}
   CHAT.room=room;const w=$('#chatWrap');
-  if(w){const tx=$('#chatTx'),keep=tx?tx.value:'';w.innerHTML=chatInner();const t2=$('#chatTx');if(t2){t2.value=keep;t2.focus();}chatAfter();w.scrollIntoView({behavior:'smooth',block:'nearest'});}
-  else go('chat');
+  if(w){const tx=$('#chatTx'),keep=tx&&!CHAT.edit?tx.value:'';w.innerHTML=chatInner();const t2=$('#chatTx');if(t2){t2.value=keep;if(!jump)t2.focus();}chatAfter();if(jump)setTimeout(()=>jumpMsg(jump),60);else w.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  else{go('chat');if(jump)setTimeout(()=>jumpMsg(jump),400);}
 }
+function jumpMsg(id){
+  const el=document.querySelector(`#chatMsgs [data-mid="${CSS.escape(id)}"]`);
+  if(!el){toast('🔎','that message is older than what’s loaded','only the latest 200 messages in each chat are shown');return;}
+  el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
+}
+function chatSearch(v){CHAT.q=v.trim();const cl=$('#chatList');if(cl)cl.innerHTML=chatListHTML();}
+
+/* ---- composing: mentions autocomplete, reply, edit ---- */
+function acCands(){const ppl=chatPeople().map(p=>({name:p.name,pid:p.pid}));return CHAT.room==='team'?ppl.concat([{name:'everyone',pid:null}]):ppl.filter(p=>chatRooms().find(r=>r.room===CHAT.room&&r.pid===p.pid));}
+function chatAcUpd(){
+  const tx=$('#chatTx'),box=$('#chatAc');if(!tx||!box)return;
+  const m=tx.value.slice(0,tx.selectionStart).match(/(^|\s)@([\w]*)$/);
+  if(!m){chatAcClose();return;}
+  const q=m[2].toLowerCase(),c=acCands().filter(p=>p.name.toLowerCase().startsWith(q)).slice(0,6);
+  if(!c.length){chatAcClose();return;}
+  CHAT.ac={q:m[2],list:c,i:Math.min(CHAT.ac?CHAT.ac.i:0,c.length-1)};
+  box.innerHTML=c.map((p,i)=>`<div class="aci ${i===CHAT.ac.i?'on':''}" onmousedown="event.preventDefault();chatAcPick(${i})">${p.pid?av(p.pid,24):'<span class="cteam" style="width:24px;height:24px;font-size:12px">📣</span>'}<b>@${esc(p.name)}</b>${p.pid?'':'<span class="lab">notify the whole team</span>'}</div>`).join('');
+  box.classList.add('on');
+}
+function chatAcClose(){CHAT.ac=null;const b=$('#chatAc');if(b){b.classList.remove('on');b.innerHTML='';}}
+function chatAcPick(i){
+  const tx=$('#chatTx'),a=CHAT.ac;if(!tx||!a)return;const p=a.list[i];
+  const pos=tx.selectionStart,before=tx.value.slice(0,pos).replace(new RegExp('@'+escRe(a.q)+'$'),'@'+p.name+' ');
+  tx.value=before+tx.value.slice(pos);tx.setSelectionRange(before.length,before.length);tx.focus();chatAcClose();
+}
+function chatKey(e){
+  if(CHAT.ac){
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();CHAT.ac.i=(CHAT.ac.i+(e.key==='ArrowDown'?1:-1)+CHAT.ac.list.length)%CHAT.ac.list.length;chatAcUpd();return;}
+    if(e.key==='Enter'||e.key==='Tab'){e.preventDefault();chatAcPick(CHAT.ac.i);return;}
+    if(e.key==='Escape'){e.preventDefault();chatAcClose();return;}
+  }
+  if(e.key==='Escape'&&(CHAT.reply||CHAT.edit)){e.preventDefault();cancelCtx();return;}
+  if(e.key==='ArrowUp'&&!e.target.value){const l=(CHAT.msgs[CHAT.room]||[]).filter(m=>m.email===meEmail());if(l.length){e.preventDefault();startEdit(CHAT.room,l[l.length-1].id);}return;}
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}
+}
+function findMentions(t){
+  const out=new Set(),ppl=chatPeople();
+  const inRoom=CHAT.room==='team'?ppl:ppl.filter(p=>dmRoom(p.email)===CHAT.room);
+  if(CHAT.room==='team'&&/(^|\s)@everyone(?![\w])/i.test(t))ppl.forEach(p=>out.add(p.email));
+  inRoom.forEach(p=>{if(new RegExp('(^|\\s)@'+escRe(p.name)+'(?![\\w])','i').test(t))out.add(p.email);});
+  return [...out];
+}
+function setCtx(){const c=$('#chatCtx');if(c)c.innerHTML=ctxHTML();}
+function startReply(room,id){const m=findMsg(room,id);if(!m)return;CHAT.edit=null;CHAT.reply={id,name:msgName(m),text:String(m.text).slice(0,160),email:m.email};setCtx();const t=$('#chatTx');if(t)t.focus();}
+function startEdit(room,id){const m=findMsg(room,id);if(!m||m.email!==meEmail())return;CHAT.reply=null;CHAT.edit={room,id};setCtx();const t=$('#chatTx');if(t){t.value=m.text;t.focus();t.style.height='auto';t.style.height=Math.min(t.scrollHeight,140)+'px';}}
+function cancelCtx(){const wasEdit=!!CHAT.edit;CHAT.reply=null;CHAT.edit=null;setCtx();const t=$('#chatTx');if(t){if(wasEdit){t.value='';t.style.height='auto';}t.focus();}}
 function sendChat(){
-  const tx=$('#chatTx');if(!tx)return;const t=tx.value.trim();if(!t)return;
+  const tx=$('#chatTx');if(!tx)return;const t=tx.value.trim();
+  if(CHAT.edit){
+    const {room,id}=CHAT.edit,m=findMsg(room,id);
+    if(!t){toast('✎','a message can’t be empty','delete it instead if you don’t need it');return;}
+    CHAT.edit=null;setCtx();tx.value='';tx.style.height='auto';
+    if(!m||m.text===t)return;
+    Object.assign(m,{text:t,edited:true});chatRefresh(room);
+    roomColl(room).doc(id).update({text:t.slice(0,2000),mentions:findMentions(t),edited:true,editedMs:Date.now()}).catch(e=>toast('🙈','edit not saved',niceErr(e)));
+    return;
+  }
+  if(!t)return;
   tx.value='';tx.style.height='auto';const own=CLOUD.role==='owner';
-  roomColl(CHAT.room).add({text:t.slice(0,2000),email:meEmail(),person:own?'me':(CLOUD.person||''),name:own?(S.settings.name||'mae'):(CLOUD.name||rname(CLOUD.person)||CLOUD.user.displayName||''),ms:Date.now(),at:ts0()})
-    .catch(e=>{toast('🙈','message not sent',niceErr(e));tx.value=t;});
+  const doc={text:t.slice(0,2000),email:meEmail(),person:own?'me':(CLOUD.person||''),name:myName(),ms:Date.now(),at:ts0(),mentions:findMentions(t)};
+  if(CHAT.reply)doc.reply={id:CHAT.reply.id,name:CHAT.reply.name,text:CHAT.reply.text};
+  const rep=CHAT.reply;CHAT.reply=null;setCtx();
+  roomColl(CHAT.room).add(doc).catch(e=>{toast('🙈','message not sent',niceErr(e));tx.value=t;CHAT.reply=rep;setCtx();});
+}
+
+/* ---- message actions ---- */
+function toggleRx(room,id,e){
+  const m=findMsg(room,id);if(!m)return;const me=meEmail();
+  const rx=JSON.parse(JSON.stringify(m.rx||{}));const l=rx[e]||[];
+  rx[e]=l.includes(me)?l.filter(x=>x!==me):l.concat([me]);if(!rx[e].length)delete rx[e];
+  m.rx=rx;chatRefresh(room);
+  roomColl(room).doc(id).update({rx}).catch(er=>toast('🙈','reaction not saved',niceErr(er)));
+}
+function togglePin(room,id){
+  const m=findMsg(room,id);if(!m)return;const on=!m.pinned;
+  m.pinned=on;chatRefresh(room);
+  roomColl(room).doc(id).update({pinned:on,pinnedBy:myName(),pinnedMs:Date.now()}).then(()=>toast('📌',on?'pinned':'unpinned',on?'everyone in this chat sees it at the top':'')).catch(er=>toast('🙈','couldn\'t pin',niceErr(er)));
 }
 function delChat(room,id){confirmBox('delete this message?','it disappears for everyone in the chat',()=>roomColl(room).doc(id).delete().catch(e=>toast('🙈','couldn\'t delete',niceErr(e))));}
 function chatCard(){setTimeout(chatAfter,0);return `<div class="card" style="padding:0;overflow:hidden"><div id="chatWrap">${chatInner()}</div></div>`;}
 function pChat(){if(!CLOUD.on)return '<div class="card empty"><span class="hand">chat needs logins ✿</span>turn on logins in settings to message the team</div>';return chatCard();}
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&$('#chatMsgs')&&CLOUD.on)chatAfter();});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&CLOUD.on){pushPresence(true);if($('#chatMsgs'))chatAfter();}});
 
 /* activity log */
 const ACT={signin:['🔑','#e6e7dc'],signout:['👋','#eee8e4'],request:['💌','#fbe3e2'],status:['🎨','#efcdc9'],done:['✅','#dfe3d4'],listing:['🏡','#e8d3d8'],studio:['🛋️','#efcdc9'],meeting:['💬','#ebdfe1']};
