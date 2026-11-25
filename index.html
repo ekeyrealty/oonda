@@ -562,6 +562,46 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 .gifpow{font-family:var(--mono);font-size:10px;letter-spacing:.06em;font-weight:700;color:#7a6a6d}
 .emofoot{padding:6px 14px 9px;text-align:center;box-shadow:0 -1px 0 rgba(235,223,225,.7)}
 @media (max-width:900px){.chatbox{grid-template-rows:auto auto}.chatmain{overflow:visible}.chatmsgs{flex:none;height:62vh}}
+.callbtns{display:flex;gap:2px}
+.btn.pulse{animation:cpulse 1.8s infinite}
+@keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(217,143,151,.5)}50%{box-shadow:0 0 0 7px rgba(217,143,151,0)}}
+.callcard{display:flex;gap:10px;align-items:center;min-width:240px}
+.callcard .ci{width:38px;height:38px;border-radius:50%;background:var(--blush);display:grid;place-items:center;font-size:18px;flex-shrink:0}
+.cmsg.mine .callcard .ci{background:rgba(255,255,255,.6)}
+.callring{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:10000;display:flex;gap:12px;align-items:center;background:var(--paper);border-radius:26px;padding:12px 14px 12px 12px;box-shadow:var(--sh2);width:min(460px,94vw);animation:tin .5s cubic-bezier(.2,1.3,.35,1)}
+.callring .crav{animation:cring 1.2s infinite;display:inline-flex}
+@keyframes cring{0%,100%{transform:rotate(0)}10%{transform:rotate(-9deg)}20%{transform:rotate(9deg)}30%{transform:rotate(-6deg)}40%{transform:rotate(0)}}
+.callbox{position:fixed;right:18px;bottom:18px;z-index:9998;width:min(760px,calc(100vw - 36px));background:var(--cocoa);color:#fbeee9;border-radius:28px;box-shadow:var(--sh2);padding:12px;animation:tin .45s cubic-bezier(.2,1.3,.35,1)}
+.callbox .lab{color:#c9b3b6}
+.callbox.min{width:auto;display:flex;gap:10px;align-items:center;padding:10px 12px 10px 16px;border-radius:99px}
+.callbox .chd{display:flex;gap:10px;align-items:center;padding:2px 6px 10px}
+.callbox .x{border:0;background:rgba(255,255,255,.1);color:#fbeee9;width:30px;height:30px;border-radius:50%;cursor:pointer}
+.cdot{width:9px;height:9px;border-radius:50%;background:#8fb08a;box-shadow:0 0 0 4px rgba(143,176,138,.25);animation:cpulse2 1.6s infinite}
+@keyframes cpulse2{50%{box-shadow:0 0 0 7px rgba(143,176,138,0)}}
+.cgrid{display:grid;gap:8px;grid-template-columns:1fr}
+.cgrid[data-n="2"]{grid-template-columns:1fr 1fr}
+.cgrid[data-n="3"],.cgrid[data-n="4"]{grid-template-columns:1fr 1fr}
+.cgrid[data-n="5"],.cgrid[data-n="6"]{grid-template-columns:1fr 1fr 1fr}
+.ctile{position:relative;aspect-ratio:16/10;background:linear-gradient(160deg,#4a3a3f,#3a2d31);border-radius:18px;overflow:hidden;display:grid;place-items:center}
+.ctile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0}
+.ctile.vid video{opacity:1}
+.ctile.vid .cav{opacity:0}
+.ctile.mirror video{transform:scaleX(-1)}
+.ctile .cav .avi{box-shadow:0 0 0 4px rgba(255,255,255,.12)}
+.ctile .tl{position:absolute;left:8px;bottom:8px;right:8px}
+.ctile .tn{background:rgba(30,20,24,.55);backdrop-filter:blur(6px);border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700}
+.ctile .tn i{font-style:normal;color:#f0c1c7}
+.cwait{text-align:center;font-family:var(--mono);font-size:12px;color:#c9b3b6;padding:6px 0 0}
+.cwait:empty{display:none}
+.cctl{display:flex;gap:10px;justify-content:center;padding:12px 0 2px}
+.cbtn{width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer;transition:background .2s,transform .15s}
+.cbtn:hover{transform:scale(1.07);background:rgba(255,255,255,.2)}
+.cbtn.off{background:#f0c1c7}
+.cbtn.on{background:#a9b8a8}
+.cbtn.cend,.btn.cend{background:#d9566a;color:#fff}
+.cbtn.cend{transform:rotate(135deg)}
+.cbtn.cend:hover{transform:rotate(135deg) scale(1.07)}
+@media (max-width:700px){.callbox{right:8px;left:8px;bottom:8px;width:auto}.callbox.min{left:auto}}
 /* activity */
 .act{display:flex;gap:12px;align-items:center;padding:9px 8px;border-radius:16px;transition:background .2s}
 .act:hover{background:var(--soft)}
@@ -1861,6 +1901,11 @@ service cloud.firestore {
     // chat photos: same people as the chat they were sent in; only the sender can delete
     match /chatimgs/{id} { allow read: if isOwner() || isMember(); allow create: if (isOwner() || isMember()) && request.resource.data.email == me() && request.resource.data.data is string && request.resource.data.data.size() < 1000000; allow delete: if signedIn() && resource.data.email == me(); allow update: if false; }
     match /dms/{room}/imgs/{id} { allow read: if (isOwner() || isMember()) && me() in room.split('~'); allow create: if (isOwner() || isMember()) && me() in room.split('~') && request.resource.data.email == me() && request.resource.data.data is string && request.resource.data.data.size() < 1000000; allow delete: if signedIn() && resource.data.email == me(); allow update: if false; }
+    // calls: same people as the chat; anyone in it can join, ring and send connection info
+    match /calls/{id} { allow read, update: if isOwner() || isMember(); allow create: if (isOwner() || isMember()) && request.resource.data.by == me(); allow delete: if false; }
+    match /calls/{id}/{sub=**} { allow read, write: if isOwner() || isMember(); }
+    match /dms/{room}/calls/{id} { allow read, update: if (isOwner() || isMember()) && me() in room.split('~'); allow create: if (isOwner() || isMember()) && me() in room.split('~') && request.resource.data.by == me(); allow delete: if false; }
+    match /dms/{room}/calls/{id}/{sub=**} { allow read, write: if (isOwner() || isMember()) && me() in room.split('~'); }
     // activity log: everyone signed in can read; each person only adds entries as themselves; nobody can edit or delete
     match /activity/{id} { allow read: if isOwner() || isMember(); allow create: if (isOwner() || isMember()) && request.resource.data.email == me(); allow update, delete: if false; }
     // requests: people send their own and only see their own; Mae + Eric see all
@@ -2026,7 +2071,7 @@ async function saveAccess(){
 ICONS.chat='<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h7A2.5 2.5 0 0 1 16 6.5v4a2.5 2.5 0 0 1-2.5 2.5H9l-3.5 3v-3A2.5 2.5 0 0 1 4 10.5z"/><path d="M16 9h1.5A2.5 2.5 0 0 1 20 11.5v4a2.5 2.5 0 0 1-2.5 2.5V21L14 18h-2.5A2.5 2.5 0 0 1 9 16"/>';
 const CHAT={room:'team',msgs:{},subs:{},pins:{},first:{},read:{},pres:{},presOn:false,reply:null,edit:null,q:'',pinOpen:false,ac:null,att:null,imgs:{}};
 const RX=['❤️','👍','✅'];
-const msgText=m=>m.text||(m.img?(m.img.type==='image/gif'?'🎞 GIF':'📷 photo'):'')||(m.gif?'🎞 GIF':'');
+const msgText=m=>m.text||(m.img?(m.img.type==='image/gif'?'🎞 GIF':'📷 photo'):'')||(m.gif?'🎞 GIF':'')||(m.call?(m.call.video?'🎥 video call':'📞 call'):'');
 const meEmail=()=>CLOUD.user?CLOUD.user.email.toLowerCase():'';
 const ownerEm=()=>String(SETUP.ownerEmail||'').toLowerCase();
 const cap=s=>s?String(s)[0].toUpperCase()+String(s).slice(1):s;
@@ -2065,6 +2110,7 @@ function subRoom(room){
     chatRefresh(room);
   },e=>console.warn('chat',e));
   CLOUD.unsub.push(CHAT.subs[room]);
+  subCalls(room);
   CLOUD.unsub.push(roomColl(room).where('pinned','==',true).onSnapshot(qs=>{
     CHAT.pins[room]=qs.docs.map(d=>Object.assign({id:d.id},d.data())).sort((a,b)=>(b.pinnedMs||0)-(a.pinnedMs||0));
     if(room===CHAT.room){const pb=$('#chatPins');if(pb)pb.innerHTML=pinsHTML();}
@@ -2151,7 +2197,8 @@ function chatListHTML(){
     const prev=l?(l.email===meEmail()?'you: ':(r.room==='team'?msgName(l)+': ':''))+msgText(l).replace(/\s+/g,' ').slice(0,42):(r.email?lastSeen(r.email):r.sub);
     return `<div class="croom ${r.room===CHAT.room?'on':''}" data-r="${esc(r.room)}" onclick="openChat(this.dataset.r)">${r.pid?avDot(r.pid,36,r.email):'<span class="cteam">💬</span>'}<div style="min-width:0;flex:1"><div class="cn">${esc(r.name)}</div><div class="cs">${esc(prev)}</div></div>${at?'<span class="cnt at">@</span>':''}${u?`<span class="cnt">${u}</span>`:''}</div>`;}).join('');
 }
-function chatHeadHTML(){
+function chatHeadHTML(){return chatHeadHTML0()+callBtnsHTML();}
+function chatHeadHTML0(){
   const r=chatRooms().find(x=>x.room===CHAT.room)||chatRooms()[0];
   if(r.pid)return `${avDot(r.pid,38,r.email)}<div><b style="font-family:var(--head);font-size:17px">${esc(r.name)}</b><div class="lab">${isOnline(r.email)?'<span class="ontxt">● online now</span>':esc(lastSeen(r.email))} · 🔒 only you two see this</div></div>`;
   const on=chatPeople().filter(p=>isOnline(p.email));
@@ -2184,7 +2231,7 @@ function chatMsgsHTML(){
     const head=!p||p.email!==m.email||m.ms-p.ms>5*6e4||dayKey(p.ms)!==k||!!m.reply, last=!n||n.email!==m.email||n.ms-m.ms>5*6e4;
     const done=m.rx&&(m.rx['✅']||[]).length;
     const rq=m.reply?`<div class="rq" data-i="${esc(m.reply.id)}" onclick="jumpMsg(this.dataset.i)"><b>↩ ${esc(m.reply.name)}</b>${esc(String(m.reply.text).slice(0,120))}</div>`:'';
-    out+=`<div class="cmsg ${mine?'mine':''} ${head?'gap':''} ${last?'last':''} ${mentionsMe(m)&&!mine?'atme':''}" data-mid="${esc(m.id)}">${mine?'':(head?av(msgPid(m),30):'<span style="width:30px;flex-shrink:0"></span>')}<div class="cb">${head&&!mine?`<div class="cname">${esc(msgName(m))}</div>`:''}${actHTML(CHAT.room,m,mine)}<div class="bub${(m.img||m.gif)&&!m.text?' imgonly':''}" onclick="if(!event.target.closest('a,.rq,.cimg,.limg'))this.closest('.cmsg').classList.toggle('sh')">${m.pinned?'<span class="pinmk" title="pinned">📌</span>':''}${rq}${m.img?imgHTML(CHAT.room,m):''}${m.gif?`<img class="limg gifim" src="${esc(m.gif.url)}" style="aspect-ratio:${+m.gif.w||1}/${+m.gif.h||1}" alt="${esc(m.gif.title||'GIF')}" loading="lazy" referrerpolicy="no-referrer" onclick="chatLightbox(this.src)">`:''}${linkify(m.text)}${m.edited?'<span class="ed">edited</span>':''}</div>${rxHTML(CHAT.room,m)}<div class="ctime">${fT(m.ms)} pht · ${fT(m.ms,CST)} ${cAb(m.ms).toLowerCase()}${done?' · <span class="donetag">✅ done</span>':''}</div></div></div>`;
+    out+=`<div class="cmsg ${mine?'mine':''} ${head?'gap':''} ${last?'last':''} ${mentionsMe(m)&&!mine?'atme':''}" data-mid="${esc(m.id)}">${mine?'':(head?av(msgPid(m),30):'<span style="width:30px;flex-shrink:0"></span>')}<div class="cb">${head&&!mine?`<div class="cname">${esc(msgName(m))}</div>`:''}${actHTML(CHAT.room,m,mine)}<div class="bub${(m.img||m.gif)&&!m.text?' imgonly':''}${m.call?' callb':''}" onclick="if(!event.target.closest('a,.rq,.cimg,.limg'))this.closest('.cmsg').classList.toggle('sh')">${m.pinned?'<span class="pinmk" title="pinned">📌</span>':''}${rq}${m.call?callCardHTML(CHAT.room,m):''}${m.img?imgHTML(CHAT.room,m):''}${m.gif?`<img class="limg gifim" src="${esc(m.gif.url)}" style="aspect-ratio:${+m.gif.w||1}/${+m.gif.h||1}" alt="${esc(m.gif.title||'GIF')}" loading="lazy" referrerpolicy="no-referrer" onclick="chatLightbox(this.src)">`:''}${linkify(m.text)}${m.edited?'<span class="ed">edited</span>':''}</div>${rxHTML(CHAT.room,m)}<div class="ctime">${fT(m.ms)} pht · ${fT(m.ms,CST)} ${cAb(m.ms).toLowerCase()}${done?' · <span class="donetag">✅ done</span>':''}</div></div></div>`;
   });
   return out+seenHTML();
 }
@@ -2444,8 +2491,221 @@ function sendGif(g){
   roomColl(room).add(doc).catch(e=>toast('🙈','GIF not sent',niceErr(e)));
 }
 
+
+/* ---- calls: voice + video, whole team or 1:1, built in (free, browser-to-browser) ---- */
+const CALL={live:{},cur:null,declined:{},ringing:null,ringT:null,failed:{}};
+const ICE={iceServers:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302','stun:stun2.l.google.com:19302']}]};
+const VIDC={width:{ideal:640},height:{ideal:360},frameRate:{ideal:20}};
+const callColl=room=>room==='team'?CLOUD.db.collection('calls'):CLOUD.db.collection('dms').doc(room.slice(3)).collection('calls');
+const callAlive=c=>!!c&&c.status==='live'&&Date.now()-(c.alive||c.ms||0)<60000;
+const pidOf=em=>em===ownerEm()?'me':((chatPeople().find(p=>p.email===em)||{}).pid||(em===meEmail()?(CLOUD.role==='owner'?'me':CLOUD.person):em));
+const nameOf=em=>em===meEmail()?'you':cap(((chatPeople().find(p=>p.email===em)||{}).name)||em.split('@')[0]);
+const roomName=room=>room==='team'?'team call':((chatRooms().find(r=>r.room===room)||{}).name||'call');
+const liveIn=room=>Object.values(CALL.live).find(c=>c.room===room&&callAlive(c));
+
+function subCalls(room){
+  CLOUD.unsub.push(callColl(room).where('status','==','live').onSnapshot(qs=>{
+    const seen=new Set();
+    qs.docs.forEach(d=>{const c=Object.assign({id:d.id,room},d.data());seen.add(d.id);CALL.live[d.id]=c;
+      if(c.by!==meEmail()&&!CALL.declined[c.id]&&!(CALL.cur&&CALL.cur.id===c.id)&&Date.now()-(c.ms||0)<45000&&callAlive(c))callRing(c);});
+    Object.keys(CALL.live).forEach(id=>{if(CALL.live[id].room===room&&!seen.has(id)){delete CALL.live[id];if(CALL.ringing&&CALL.ringing.id===id)stopRing();}});
+    callUI();
+  },e=>console.warn('calls',e)));
+}
+function callUI(){
+  document.querySelectorAll('.callcard[data-call]').forEach(el=>el.innerHTML=callCardInner(el.dataset.room,el.dataset.call,el.dataset.video==='1',el.dataset.by));
+  const h=$('#chatHead');if(h)h.innerHTML=chatHeadHTML();
+}
+function callBtnsHTML(){
+  if(!CLOUD.on)return '';const c=liveIn(CHAT.room),inIt=c&&CALL.cur&&CALL.cur.id===c.id;
+  if(c)return `<span style="flex:1"></span><button class="btn sm ${inIt?'':'rose'} pulse" data-r="${esc(CHAT.room)}" data-i="${esc(c.id)}" onclick="joinCall(this.dataset.r,this.dataset.i)">${c.video?'🎥':'📞'} ${inIt?'in call':'join call'}</button>`;
+  return `<span style="flex:1"></span><div class="callbtns"><button class="cib" title="${CHAT.room==='team'?'voice call the team':'voice call'}" onclick="startCall(false)">📞</button><button class="cib" title="${CHAT.room==='team'?'video call the team':'video call'}" onclick="startCall(true)">🎥</button></div>`;
+}
+function callCardHTML(room,m){return `<div class="callcard" data-room="${esc(room)}" data-call="${esc(m.call.id)}" data-video="${m.call.video?1:0}" data-by="${esc(m.email)}">${callCardInner(room,m.call.id,!!m.call.video,m.email)}</div>`;}
+function callCardInner(room,id,video,by){
+  const c=CALL.live[id],live=callAlive(c),inIt=CALL.cur&&CALL.cur.id===id;
+  return `<span class="ci">${video?'🎥':'📞'}</span><div style="flex:1;min-width:0"><b>${esc(nameOf(by))} started a ${video?'video':'voice'} call</b><div class="lab">${live?(inIt?'you’re in this call':'happening now'):'call ended'+(c===undefined?'':'')}</div></div>${live&&!inIt?`<button class="btn sm rose" data-r="${esc(room)}" data-i="${esc(id)}" onclick="joinCall(this.dataset.r,this.dataset.i)">join</button>`:''}`;
+}
+
+/* ringing */
+function ringTone(){
+  try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const c=audioCtx,n=c.currentTime;
+    [0,.42].forEach(d=>[440,480].forEach(f=>{const o=c.createOscillator(),g=c.createGain();o.frequency.value=f;g.gain.setValueAtTime(0,n+d);g.gain.linearRampToValueAtTime(.05,n+d+.03);g.gain.setValueAtTime(.05,n+d+.3);g.gain.linearRampToValueAtTime(0,n+d+.36);o.connect(g).connect(c.destination);o.start(n+d);o.stop(n+d+.4);}));
+  }catch(e){}
+}
+function callRing(c){
+  if(CALL.ringing&&CALL.ringing.id===c.id)return;stopRing();CALL.ringing=c;
+  const who=nameOf(c.by),team=c.room==='team';
+  const d=document.createElement('div');d.id='callRing';d.className='callring';
+  d.innerHTML=`<span class="crav">${av(pidOf(c.by),52)}</span><div style="flex:1;min-width:0"><b>${esc(who)} is calling${team?' the team':' you'}</b><div class="lab">${c.video?'🎥 video call':'📞 voice call'}${team?' · team chat':' · private'}</div></div><button class="btn rose" data-r="${esc(c.room)}" data-i="${esc(c.id)}" onclick="joinCall(this.dataset.r,this.dataset.i)">join</button><button class="btn ghost" onclick="declineCall()">decline</button>`;
+  document.body.appendChild(d);
+  ringTone();CALL.ringT=setInterval(ringTone,2600);setTimeout(()=>{if(CALL.ringing&&CALL.ringing.id===c.id)stopRing();},40000);
+  if('Notification' in window&&Notification.permission==='granted'&&document.visibilityState!=='visible'){try{new Notification('oonda · '+who+' is calling',{body:c.video?'video call':'voice call',requireInteraction:true});}catch(e){}}
+}
+function stopRing(){clearInterval(CALL.ringT);CALL.ringT=null;CALL.ringing=null;const d=$('#callRing');if(d)d.remove();}
+function declineCall(){if(CALL.ringing)CALL.declined[CALL.ringing.id]=1;stopRing();}
+
+/* start / join / leave */
+async function startCall(video){
+  if(CALL.cur){callShow();toast('📞','you’re already in a call','hang up first to start another');return;}
+  const room=CHAT.room,ex=liveIn(room);if(ex){joinCall(room,ex.id,video);return;}
+  const ref=callColl(room).doc(uid()+uid()),now=Date.now();
+  try{
+    await ref.set({by:meEmail(),byName:myName(),video:!!video,ms:now,alive:now,status:'live'});
+    CALL.live[ref.id]={id:ref.id,room,by:meEmail(),byName:myName(),video:!!video,ms:now,alive:now,status:'live'};
+    const ok=await joinCall(room,ref.id,video,true);
+    if(ok&&room==='team')logAct('call','started a team '+(video?'video':'voice')+' call');
+    if(ok)roomColl(room).add({text:'',email:meEmail(),person:CLOUD.role==='owner'?'me':(CLOUD.person||''),name:myName(),ms:Date.now(),at:ts0(),mentions:[],call:{id:ref.id,video:!!video}}).catch(()=>{});
+  }catch(e){toast('🙈','couldn’t start the call',niceErr(e));}
+}
+async function joinCall(room,id,video,starter){
+  if(CALL.cur){if(CALL.cur.id===id){callShow();return true;}toast('📞','you’re already in a call','hang up first to join this one');return false;}
+  stopRing();
+  const c=CALL.live[id];if(video===undefined)video=c?!!c.video:false;
+  if(!navigator.mediaDevices||!window.RTCPeerConnection){toast('🙈','this browser can’t do calls','try Chrome, Edge or Safari');return false;}
+  let stream=null;
+  try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:video?VIDC:false});}
+  catch(e){if(video){try{stream=await navigator.mediaDevices.getUserMedia({audio:true});toast('🎥','camera not available','joining with voice only');}catch(e2){}}}
+  if(!stream){toast('🎤','oonda needs your microphone for calls','allow the mic (the icon in the address bar), then try again',10000);if(starter)callColl(room).doc(id).update({status:'ended',endMs:Date.now()}).catch(()=>{});return false;}
+  const ref=callColl(room).doc(id),cur={id,room,ref,stream,pcs:{},q:{},remote:{},peers:{},joined:Date.now(),muted:false,cam:stream.getVideoTracks().length>0,screen:null,unsub:[],t0:Date.now(),min:false};
+  CALL.cur=cur;
+  try{await ref.collection('peers').doc(meEmail()).set({name:myName(),joined:cur.joined,ping:Date.now(),video:cur.cam,muted:false,screen:false});}
+  catch(e){toast('🙈','couldn’t join the call',niceErr(e));CALL.cur=null;stream.getTracks().forEach(t=>t.stop());return false;}
+  cur.unsub.push(ref.collection('peers').onSnapshot(qs=>callPeers(qs,cur),e=>console.warn('peers',e)));
+  cur.unsub.push(ref.collection('sig').where('to','==',meEmail()).onSnapshot(qs=>{if(CALL.cur!==cur)return;qs.docChanges().forEach(ch=>{if(ch.type==='added')callSig(ch.doc,cur);});},e=>console.warn('sig',e)));
+  cur.hb=setInterval(()=>callBeat(cur),10000);cur.tick=setInterval(()=>{const t=$('#callTime');if(t)t.textContent=mmss(Date.now()-cur.t0);},1000);
+  ref.update({alive:Date.now()}).catch(()=>{});
+  window.addEventListener('beforeunload',callUnload);
+  callShow();callUI();
+  return true;
+}
+const mmss=ms=>{const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60);return (h?h+':':'')+String(m).padStart(h?2:1,'0')+':'+String(s%60).padStart(2,'0');};
+function callBeat(cur){
+  if(CALL.cur!==cur)return;const now=Date.now();
+  cur.ref.collection('peers').doc(meEmail()).update({ping:now}).catch(()=>{});
+  cur.ref.update({alive:now}).catch(()=>{});
+}
+async function leaveCall(){
+  const cur=CALL.cur;if(!cur)return;CALL.cur=null;
+  clearInterval(cur.hb);clearInterval(cur.tick);cur.unsub.forEach(f=>{try{f();}catch(e){}});
+  Object.values(cur.pcs).forEach(pc=>{try{pc.close();}catch(e){}});
+  cur.stream.getTracks().forEach(t=>t.stop());if(cur.screen)cur.screen.getTracks().forEach(t=>t.stop());
+  window.removeEventListener('beforeunload',callUnload);
+  const el=$('#callBox');if(el)el.remove();
+  const alone=!Object.keys(cur.peers).length;
+  try{await cur.ref.collection('peers').doc(meEmail()).delete();}catch(e){}
+  if(alone){cur.ref.update({status:'ended',endMs:Date.now()}).catch(()=>{});const c=CALL.live[cur.id];if(c)c.status='ended';}
+  callUI();toast('📞','call ended',mmss(Date.now()-cur.t0)+' long');
+}
+function callUnload(){const cur=CALL.cur;if(!cur)return;try{cur.ref.collection('peers').doc(meEmail()).delete();if(!Object.keys(cur.peers).length)cur.ref.update({status:'ended',endMs:Date.now()});}catch(e){}}
+
+/* connections (one per person in the call) */
+function callPeers(qs,cur){
+  if(CALL.cur!==cur)return;const me=meEmail(),now=Date.now(),present={};
+  qs.docs.forEach(d=>{if(d.id===me)return;const p=d.data();if(now-(p.ping||0)>35000)return;present[d.id]=p;});
+  cur.peers=present;
+  Object.keys(present).forEach(em=>{if(!cur.pcs[em]){const p=present[em];if(p.joined<cur.joined||(p.joined===cur.joined&&em<me))callOffer(em,cur);}});
+  Object.keys(cur.pcs).forEach(em=>{if(!present[em])callDrop(em,cur);});
+  callRender();
+}
+function sendSig(cur,to,type,data){cur.ref.collection('sig').add({from:meEmail(),to,type,data,ms:Date.now()}).catch(e=>console.warn('sig send',e));}
+function callVideoTrack(){const cur=CALL.cur;if(!cur)return null;if(cur.screen)return cur.screen.getVideoTracks()[0]||null;return cur.cam?(cur.stream.getVideoTracks()[0]||null):null;}
+function newPC(em,cur){
+  const pc=new RTCPeerConnection(ICE);cur.pcs[em]=pc;cur.q[em]=cur.q[em]||[];
+  pc.onicecandidate=e=>{if(e.candidate)sendSig(cur,em,'ice',JSON.stringify(e.candidate.toJSON()));};
+  pc.ontrack=e=>{let s=cur.remote[em];if(!s)s=cur.remote[em]=new MediaStream();if(!s.getTracks().includes(e.track))s.addTrack(e.track);callRender();};
+  pc.onconnectionstatechange=()=>{if(CALL.cur!==cur)return;callRender();if(pc.connectionState==='failed'&&!CALL.failed[em]){CALL.failed[em]=1;toast('📶','couldn’t connect to '+nameOf(em),'their network may block direct calls — try Wi-Fi, or tap “move to Jitsi” in the call',12000);}if(pc.connectionState==='connected')delete CALL.failed[em];};
+  return pc;
+}
+function attachLocal(pc,cur,offerer){
+  const a=cur.stream.getAudioTracks()[0]||null,v=callVideoTrack();
+  if(offerer){pc.addTransceiver(a||'audio',{direction:'sendrecv',streams:[cur.stream]});pc.addTransceiver(v||'video',{direction:'sendrecv',streams:[cur.stream]});}
+  else pc.getTransceivers().forEach(t=>{const k=t.receiver.track.kind;t.direction='sendrecv';t.sender.replaceTrack(k==='audio'?a:v).catch(()=>{});});
+}
+async function callOffer(em,cur){
+  try{const pc=newPC(em,cur);attachLocal(pc,cur,true);await pc.setLocalDescription(await pc.createOffer());sendSig(cur,em,'offer',JSON.stringify(pc.localDescription));}
+  catch(e){console.warn('offer',e);}
+}
+async function flushQ(em,cur){const pc=cur.pcs[em],q=cur.q[em]||[];cur.q[em]=[];for(const c of q){try{await pc.addIceCandidate(c);}catch(e){}}}
+async function callSig(d,cur){
+  const s=d.data(),em=s.from;(d.ref||cur.ref.collection('sig').doc(d.id)).delete().catch(()=>{});
+  if(Date.now()-(s.ms||0)>120000)return;
+  try{
+    if(s.type==='offer'){
+      if(cur.pcs[em])callDrop(em,cur,true);
+      const pc=newPC(em,cur);await pc.setRemoteDescription(JSON.parse(s.data));attachLocal(pc,cur,false);
+      await pc.setLocalDescription(await pc.createAnswer());sendSig(cur,em,'answer',JSON.stringify(pc.localDescription));await flushQ(em,cur);
+    }else if(s.type==='answer'){
+      const pc=cur.pcs[em];if(pc&&pc.signalingState==='have-local-offer'){await pc.setRemoteDescription(JSON.parse(s.data));await flushQ(em,cur);}
+    }else if(s.type==='ice'){
+      const pc=cur.pcs[em],c=JSON.parse(s.data);if(pc&&pc.remoteDescription)await pc.addIceCandidate(c);else(cur.q[em]=cur.q[em]||[]).push(c);
+    }
+  }catch(e){console.warn('call sig',s.type,e);}
+}
+function callDrop(em,cur,keepQ){const pc=cur.pcs[em];if(pc)try{pc.close();}catch(e){}delete cur.pcs[em];delete cur.remote[em];if(!keepQ)delete cur.q[em];const t=document.querySelector(`#callGrid [data-t="${CSS.escape(em)}"]`);if(t)t.remove();const a=document.querySelector(`#callAud [data-a="${CSS.escape(em)}"]`);if(a)a.remove();}
+
+/* controls */
+function callMe(o){const cur=CALL.cur;if(cur)cur.ref.collection('peers').doc(meEmail()).update(o).catch(()=>{});}
+function callSetVideo(t){const cur=CALL.cur;if(!cur)return;Object.values(cur.pcs).forEach(pc=>pc.getTransceivers().forEach(tr=>{if(tr.receiver.track.kind==='video')tr.sender.replaceTrack(t).catch(()=>{});}));}
+function callMute(){const cur=CALL.cur;if(!cur)return;cur.muted=!cur.muted;cur.stream.getAudioTracks().forEach(t=>t.enabled=!cur.muted);callMe({muted:cur.muted});callRender();}
+async function callCam(){
+  const cur=CALL.cur;if(!cur)return;
+  if(cur.cam){cur.stream.getVideoTracks().forEach(t=>{t.stop();cur.stream.removeTrack(t);});cur.cam=false;}
+  else{try{const s=await navigator.mediaDevices.getUserMedia({video:VIDC});cur.stream.addTrack(s.getVideoTracks()[0]);cur.cam=true;}catch(e){toast('🎥','camera not available','check that no other app is using it, and that oonda is allowed to use it');return;}}
+  if(!cur.screen)callSetVideo(callVideoTrack());callMe({video:cur.cam||!!cur.screen});callRender();
+}
+async function callScreen(){
+  const cur=CALL.cur;if(!cur)return;if(cur.screen){stopScreen();return;}
+  try{const s=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:{ideal:12}},audio:false});cur.screen=s;const t=s.getVideoTracks()[0];t.onended=()=>stopScreen();callSetVideo(t);callMe({video:true,screen:true});callRender();}
+  catch(e){}
+}
+function stopScreen(){const cur=CALL.cur;if(!cur||!cur.screen)return;cur.screen.getTracks().forEach(t=>t.stop());cur.screen=null;callSetVideo(callVideoTrack());callMe({video:cur.cam,screen:false});callRender();}
+function callJitsi(){const cur=CALL.cur;if(!cur)return;const u='https://meet.jit.si/oonda-'+cur.id;window.open(u,'_blank','noopener');roomColl(cur.room).add({text:'📞 moved the call to Jitsi — join here: '+u,email:meEmail(),person:CLOUD.role==='owner'?'me':(CLOUD.person||''),name:myName(),ms:Date.now(),at:ts0(),mentions:[]}).catch(()=>{});}
+function callMin(){const cur=CALL.cur;if(!cur)return;cur.min=!cur.min;callRender(true);}
+function callShow(){const cur=CALL.cur;if(!cur)return;cur.min=false;callRender(true);}
+
+/* call window */
+function tileLabel(em,p,isMe){
+  const cur=CALL.cur,pc=!isMe&&cur.pcs[em],st=pc?pc.connectionState:'';
+  return `<span class="tn">${p&&p.muted?'🔇 ':''}${esc(isMe?'you':nameOf(em))}${p&&p.screen?' · sharing screen':''}${!isMe&&st&&st!=='connected'?` · <i>${st==='failed'?'couldn’t connect':'connecting…'}</i>`:''}</span>`;
+}
+function callRender(full){
+  const cur=CALL.cur;if(!cur)return;let box=$('#callBox');
+  if(!box||full){
+    if(box)box.remove();box=document.createElement('div');box.id='callBox';box.className='callbox'+(cur.min?' min':'');
+    const canShare=!!(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia)&&!matchMedia('(pointer:coarse)').matches;
+    box.innerHTML=cur.min?`<span class="cdot"></span><b>${esc(roomName(cur.room))}</b><span class="lab" id="callTime">${mmss(Date.now()-cur.t0)}</span><span class="lab" id="callCount"></span><button class="btn sm" onclick="callShow()">open</button><button class="btn sm cend" onclick="leaveCall()">hang up</button><div id="callAud" hidden></div>`
+    :`<div class="chd"><span class="cdot"></span><b>${esc(roomName(cur.room))}</b><span class="lab" id="callTime">${mmss(Date.now()-cur.t0)}</span><span class="lab" id="callCount"></span><span style="flex:1"></span><button class="x" title="make small" onclick="callMin()">▁</button></div>
+    <div class="cgrid" id="callGrid"></div><div id="callWait" class="cwait"></div>
+    <div class="cctl"><button class="cbtn" id="cMute" onclick="callMute()" title="mute"></button><button class="cbtn" id="cCam" onclick="callCam()" title="camera"></button>${canShare?'<button class="cbtn" id="cScr" onclick="callScreen()" title="share your screen">🖥</button>':''}<button class="cbtn" onclick="callJitsi()" title="having trouble? move this call to a free Jitsi room">↗</button><button class="cbtn cend" onclick="leaveCall()" title="hang up">📞</button></div><div id="callAud" hidden></div>`;
+    document.body.appendChild(box);
+  }
+  const n=Object.keys(cur.peers).length;const cc=$('#callCount');if(cc)cc.textContent='· '+(n+1)+' in call';
+  // remote audio (always, even when small)
+  const aud=$('#callAud');
+  Object.keys(cur.remote).forEach(em=>{let a=aud.querySelector(`[data-a="${CSS.escape(em)}"]`);if(!a){a=document.createElement('audio');a.autoplay=true;a.dataset.a=em;aud.appendChild(a);}if(a.srcObject!==cur.remote[em])a.srcObject=cur.remote[em];a.play&&a.play().catch(()=>{});});
+  if(cur.min)return;
+  const g=$('#callGrid');if(!g)return;
+  const tiles=[[meEmail(),{muted:cur.muted,video:cur.cam||!!cur.screen,screen:!!cur.screen},true]].concat(Object.entries(cur.peers).map(([em,p])=>[em,p,false]));
+  tiles.forEach(([em,p,isMe])=>{
+    let t=g.querySelector(`[data-t="${CSS.escape(em)}"]`);
+    if(!t){t=document.createElement('div');t.className='ctile';t.dataset.t=em;t.innerHTML=`<video playsinline muted autoplay></video><span class="cav">${av(pidOf(em),72)}</span><div class="tl"></div>`;g.appendChild(t);}
+    const v=t.querySelector('video'),src=isMe?(cur.screen||cur.stream):cur.remote[em];
+    if(src&&v.srcObject!==src){v.srcObject=src;v.play().catch(()=>{});}
+    const showV=!!(p&&p.video&&src&&src.getVideoTracks().some(x=>x.readyState==='live'));
+    t.classList.toggle('vid',showV);t.classList.toggle('me',isMe);t.classList.toggle('mirror',isMe&&!cur.screen);
+    t.querySelector('.tl').innerHTML=tileLabel(em,p,isMe);
+  });
+  g.querySelectorAll('.ctile').forEach(t=>{if(t.dataset.t!==meEmail()&&!cur.peers[t.dataset.t])t.remove();});
+  g.dataset.n=Math.min(tiles.length,6);
+  const w=$('#callWait');if(w)w.textContent=n?'':(cur.room==='team'?'waiting for the team to join…':'calling '+roomName(cur.room)+'…');
+  const m=$('#cMute');if(m){m.textContent=cur.muted?'🔇':'🎤';m.classList.toggle('off',cur.muted);}
+  const c=$('#cCam');if(c){c.textContent=cur.cam?'🎥':'📷';c.classList.toggle('off',!cur.cam);c.title=cur.cam?'turn camera off':'turn camera on';}
+  const s=$('#cScr');if(s)s.classList.toggle('on',!!cur.screen);
+}
+
 /* activity log */
-const ACT={signin:['🔑','#e6e7dc'],signout:['👋','#eee8e4'],request:['💌','#fbe3e2'],status:['🎨','#efcdc9'],done:['✅','#dfe3d4'],listing:['🏡','#e8d3d8'],studio:['🛋️','#efcdc9'],meeting:['💬','#ebdfe1']};
+const ACT={signin:['🔑','#e6e7dc'],signout:['👋','#eee8e4'],request:['💌','#fbe3e2'],status:['🎨','#efcdc9'],done:['✅','#dfe3d4'],listing:['🏡','#e8d3d8'],studio:['🛋️','#efcdc9'],meeting:['💬','#ebdfe1'],call:['📞','#fbe3e2']};
 let actWho='all';
 const device=()=>/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)?'phone':'computer';
 function logAct(type,text){
