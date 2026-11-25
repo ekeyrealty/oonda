@@ -563,6 +563,7 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 .emofoot{padding:6px 14px 9px;text-align:center;box-shadow:0 -1px 0 rgba(235,223,225,.7)}
 @media (max-width:900px){.chatbox{grid-template-rows:auto auto}.chatmain{overflow:visible}.chatmsgs{flex:none;height:62vh}}
 .callbtns{display:flex;gap:2px}
+.bub a.tel{text-decoration:none;background:rgba(255,255,255,.65);border-radius:8px;padding:1px 6px;white-space:nowrap;font-weight:700}
 .btn.pulse{animation:cpulse 1.8s infinite}
 @keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(217,143,151,.5)}50%{box-shadow:0 0 0 7px rgba(217,143,151,0)}}
 .callcard{display:flex;gap:10px;align-items:center;min-width:240px}
@@ -1098,7 +1099,7 @@ function header(pg){
   const subs={tasks:'everything you need to make, sorted by when it\'s due',listings:'change a status and oonda makes the marketing tasks for you',calendar:'tasks, deadlines, meetings and listing dates in one month',meetings:'scheduled, moved, done — every change is tracked',plans:'bigger campaigns broken into steps you can push to tasks',report:'auto-built from what you logged this month',settings:'make oonda yours',requests:'who asked for what — log it, do it, let them know it\'s done',mine:'send Mae a request and watch it move',activity:'who signed in, who asked for what, and what got done — live',chat:'talk with the team — a group room for everyone, plus private chats',studio:'virtual staging and video tours, from brief to delivered'};
   return `<div class="top"><div><div class="lab">${fmt(now,{weekday:'long',month:'long',day:'numeric'}).toLowerCase()} · ${fT(now)} pht · ${fT(now,CST)} ${cAb(now).toLowerCase()}</div><h1 class="h1">${title}<span class="ast">𖹭</span></h1>${subs[pg]?`<div class="sub">${subs[pg]}</div>`:''}</div>
   <div class="topr"><div class="search">${ic('search',16)}<input id="q" placeholder="search tasks, listings, meetings…" oninput="doSearch(this.value)" onblur="setTimeout(()=>{const r=$('#qres');if(r)r.style.display='none'},200)"><div id="qres"></div></div>
-  <button class="ib" onclick="cycleMood()" title="change mood">🎨</button><button class="ib" onclick="togglePanel()" title="notifications">${ic('bell')}<i id="bdot"></i></button><span class="saved" id="saved">${CLOUD.on?(CLOUD.readonly?'view only':'☁ synced'):'saved'}</span><button class="createbtn" onclick="openAdd()"><span>+</span>create new</button><span onclick="${CLOUD.on?'acctMenu()':"go('settings')"}" style="cursor:pointer" title="your account">${av(CLOUD.role==='broker'?CLOUD.person:'me',40)}</span></div></div>
+  ${rcBtn()}<button class="ib" onclick="cycleMood()" title="change mood">🎨</button><button class="ib" onclick="togglePanel()" title="notifications">${ic('bell')}<i id="bdot"></i></button><span class="saved" id="saved">${CLOUD.on?(CLOUD.readonly?'view only':'☁ synced'):'saved'}</span><button class="createbtn" onclick="openAdd()"><span>+</span>create new</button><span onclick="${CLOUD.on?'acctMenu()':"go('settings')"}" style="cursor:pointer" title="your account">${av(CLOUD.role==='broker'?CLOUD.person:'me',40)}</span></div></div>
   ${S.demo?`<div class="tape" onclick="makeMine()">you're looking at sample data · <b>make it mine</b></div>`:''}`;
 }
 function render(){
@@ -2024,7 +2025,7 @@ function cloudPush(){
 function setBadge(t){const b=$('#saved');if(b)b.textContent=t;}
 function pushPublic(force){
   if(CLOUD.role!=='owner')return;
-  const pub={listings:S.listings.filter(l=>l.status!=='withdrawn').map(l=>({id:l.id,address:l.address,city:l.city||''})),people:S.team.map(p=>({id:p.id,name:p.id==='me'?(S.settings.name||'mae'):p.name,email:emailOfPid(p.id)})),giphy:S.settings.giphyKey||''};
+  const pub={listings:S.listings.filter(l=>l.status!=='withdrawn').map(l=>({id:l.id,address:l.address,city:l.city||''})),people:S.team.map(p=>({id:p.id,name:p.id==='me'?(S.settings.name||'mae'):p.name,email:emailOfPid(p.id)})),giphy:S.settings.giphyKey||'',rc:S.settings.rcClientId||'',rcOn:S.settings.rcOn!==false};
   const j=JSON.stringify(pub);if(!force&&j===CLOUD.pubJson)return;CLOUD.pubJson=j;
   CLOUD.db.doc('oonda/public').set(Object.assign(pub,{updatedAt:ts0()})).catch(()=>{});
 }
@@ -2117,7 +2118,7 @@ function subRoom(room){
   },e=>console.warn('pins',e)));
 }
 function syncChatSubs(){if(!CLOUD.on||!CLOUD.user||!CLOUD.db)return;subRoom('team');chatPeople().forEach(p=>subRoom(dmRoom(p.email)));}
-function startChat(){chatReadLoad();syncChatSubs();startPresence();}
+function startChat(){chatReadLoad();syncChatSubs();startPresence();rcAuto();}
 
 /* ---- presence: online dot, last seen, read receipts ---- */
 let presAt=0,presTimer=null;
@@ -2209,7 +2210,7 @@ function linkify(t){
   let h=esc(t);
   if(names.length){const re=new RegExp('(^|\\s)@('+names.map(escRe).sort((a,b)=>b.length-a.length).join('|')+')(?![\\w])','gi');
     h=h.replace(re,(x,s,n)=>`${s}<b class="mt${n.toLowerCase()===String(myName()).toLowerCase()||n.toLowerCase()==='everyone'?' me':''}">@${n}</b>`);}
-  return h.replace(/(https?:\/\/[^\s<]+)/g,u=>{const im=imgUrl(u);return `<a href="${u}" target="_blank" rel="noopener">${u}</a>`+(im?`<img class="limg" src="${im}" loading="lazy" referrerpolicy="no-referrer" alt="" onclick="chatLightbox(this.src)" onerror="this.remove()">`:'');}).replace(/\n/g,'<br>');
+  return telify(h.replace(/(https?:\/\/[^\s<]+)/g,u=>{const im=imgUrl(u);return `<a href="${u}" target="_blank" rel="noopener">${u}</a>`+(im?`<img class="limg" src="${im}" loading="lazy" referrerpolicy="no-referrer" alt="" onclick="chatLightbox(this.src)" onerror="this.remove()">`:'');}).replace(/\n/g,'<br>'));
 }
 function rxHTML(room,m){
   const rx=m.rx||{};const chips=Object.keys(rx).filter(e=>(rx[e]||[]).length).map(e=>{const l=rx[e],mine=l.includes(meEmail());
@@ -2704,6 +2705,47 @@ function callRender(full){
   const s=$('#cScr');if(s)s.classList.toggle('on',!!cur.screen);
 }
 
+
+/* ---- RingCentral phone (uses your existing RingCentral plan) ---- */
+const rcId=()=>(CLOUD.role==='owner'?S.settings.rcClientId:'')||(CLOUD.pub&&CLOUD.pub.rc)||S.settings.rcClientId||'';
+const rcOn=()=>CLOUD.on&&(CLOUD.role==='owner'?S.settings.rcOn!==false:!(CLOUD.pub&&CLOUD.pub.rcOn===false));
+function rcBtn(){return rcOn()?`<button class="ib" onclick="rcPhone()" title="RingCentral phone — call & text from your work number">📞</button>`:'';}
+let rcPending=null;
+function rcFrame(){const f=document.querySelector('#rc-widget-adapter-frame');return f&&f.contentWindow;}
+function rcLoad(){
+  if(window.__rcLoaded)return;window.__rcLoaded=1;
+  const id=rcId(),s=document.createElement('script');
+  s.src='https://apps.ringcentral.com/integration/ringcentral-embeddable/latest/adapter.js'+(id?'?clientId='+encodeURIComponent(id):'');
+  s.onerror=()=>{window.__rcLoaded=0;toast('📞','couldn’t load the RingCentral phone','check your internet and try again');};
+  document.head.appendChild(s);
+  try{localStorage.setItem('oonda.rc','1');}catch(e){}
+  const t=setInterval(()=>{if(window.RCAdapter&&rcFrame()){clearInterval(t);if(rcPending){const n=rcPending;rcPending=null;setTimeout(()=>rcDialNow(n),1500);}}},400);
+  setTimeout(()=>clearInterval(t),30000);
+}
+function rcPhone(){
+  if(!window.__rcLoaded){rcLoad();toast('📞','opening your RingCentral phone','sign in with your RingCentral login the first time — it stays signed in after that',9000);return;}
+  if(window.RCAdapter){try{RCAdapter.setClosed&&RCAdapter.setClosed(false);RCAdapter.setMinimized(false);}catch(e){}}
+}
+function rcDialNow(n){const w=rcFrame();if(!w)return;try{RCAdapter.setClosed&&RCAdapter.setClosed(false);RCAdapter.setMinimized(false);}catch(e){}w.postMessage({type:'rc-adapter-new-call',phoneNumber:n,toCall:false},'*');}
+function rcDial(e,n){
+  if(!rcOn())return true;
+  e.preventDefault();
+  if(window.RCAdapter&&rcFrame())rcDialNow(n);else{rcPending=n;rcLoad();toast('📞','opening RingCentral to call '+n,'press the green call button in the phone to dial',8000);}
+  return false;
+}
+function rcAuto(){try{if(rcOn()&&localStorage.getItem('oonda.rc')==='1')rcLoad();}catch(e){}}
+const telNum=t=>{const d=t.replace(/\D/g,'');return d.length===10?'+1'+d:(d.length===11&&d[0]==='1'?'+'+d:'');};
+function telify(h){
+  return h.split(/(<a [^>]*>[\s\S]*?<\/a>|<img[^>]*>|<[^>]+>)/).map((part,i)=>i%2?part:part.replace(/(\+?1[\s.\-]?)?\(?\b\d{3}\)?[\s.\-]\d{3}[\s.\-]\d{4}\b/g,m=>{const n=telNum(m);return n?`<a href="tel:${n}" class="tel" onclick="return rcDial(event,'${n}')">📞 ${m}</a>`:m;})).join('');
+}
+function rcCardHTML(){
+  const k=S.settings.rcClientId||'',on=S.settings.rcOn!==false;
+  return `<div class="card s12"><div class="ch"><h3>📞 RingCentral phone</h3><span class="pill" style="background:${on?'var(--sage-xl)':'var(--soft)'}">${on?'on':'off'}</span></div>
+  <div style="font-size:13px;color:#6f5c60;margin-bottom:10px;line-height:1.55">Call and text from your RingCentral work number inside oonda — the 📞 button at the top, and phone numbers in chat become tap-to-call. Each person signs in with their own RingCentral login. Paste your RingCentral app's <b>Client ID</b> to remove the “demo” banner.</div>
+  <div class="row" style="gap:8px;flex-wrap:wrap"><input id="rcKey" class="inp" style="max-width:420px;font-family:var(--mono);font-size:12px" placeholder="RingCentral Client ID (optional)" value="${esc(k)}" autocomplete="off" spellcheck="false"><button class="btn dark" onclick="saveRc()">save</button><button class="btn ghost" onclick="S.settings.rcOn=${on?'false':'true'};save();pushPublic(true);render()">${on?'turn off':'turn on'}</button></div></div>`;
+}
+function saveRc(){S.settings.rcClientId=(($('#rcKey')||{}).value||'').trim();save();pushPublic(true);render();toast('📞','RingCentral settings saved','everyone gets the change after a refresh');}
+
 /* activity log */
 const ACT={signin:['🔑','#e6e7dc'],signout:['👋','#eee8e4'],request:['💌','#fbe3e2'],status:['🎨','#efcdc9'],done:['✅','#dfe3d4'],listing:['🏡','#e8d3d8'],studio:['🛋️','#efcdc9'],meeting:['💬','#ebdfe1'],call:['📞','#fbe3e2']};
 let actWho='all';
@@ -2795,7 +2837,7 @@ async function sendRequest(){
 function renderPortal(){
   const p=$('#portal');if(!p)return;const now=Date.now();
   const name=(rname(CLOUD.person)||CLOUD.name||(CLOUD.user.displayName||'there').split(' ')[0]).toLowerCase();
-  p.innerHTML=`<div class="row" style="margin-bottom:26px;flex-wrap:wrap"><div class="brand" style="padding:0">${logo(36)}<b>oonda<span class="ast">𖹭</span></b></div><div class="row" style="gap:10px"><span class="lab">${esc(CLOUD.user.email)}</span><span style="cursor:pointer" onclick="acctMenu()">${av(CLOUD.person||name,44)}</span></div></div>
+  p.innerHTML=`<div class="row" style="margin-bottom:26px;flex-wrap:wrap"><div class="brand" style="padding:0">${logo(36)}<b>oonda<span class="ast">𖹭</span></b></div><div class="row" style="gap:10px">${rcBtn()}<span class="lab">${esc(CLOUD.user.email)}</span><span style="cursor:pointer" onclick="acctMenu()">${av(CLOUD.person||name,44)}</span></div></div>
   <div class="lab">${fmt(now,{weekday:'long',month:'long',day:'numeric'}).toLowerCase()} · ${fT(now,CST)} ${cAb(now).toLowerCase()} · ${fT(now)} pht</div>
   <h1 class="h1">hi, ${esc(name)}<span class="ast">𖹭</span></h1><div class="sub">send Mae a request and watch it move — you'll get a pop-up whenever it changes</div>
   <div class="grid mt20">${reqFormHTML()}<div class="card s7" id="pList">${reqListHTML()}</div></div><div class="mt20">${chatCard()}</div>${actCard()}`;
@@ -2810,7 +2852,7 @@ function cloudCard(){
   return `<div class="card s12"><div class="ch"><h3>🔐 logins & sharing</h3><span class="lab">signed in as ${esc(CLOUD.user.email)} · ☁ live sync on</span></div>
   <div style="font-size:13px;color:#6f5c60;margin-bottom:12px;line-height:1.55">Add the email each person will sign in with. <b>broker</b> sees your whole board (view only) and can send requests · <b>requester</b> sends requests and sees only their own.</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:10px">${requesters().map(p=>{const a=byP[p.id]||{};return `<div class="row" data-acc="${p.id}" style="gap:10px;background:var(--soft);border-radius:18px;padding:8px 10px">${av(p.id,34)}<b style="width:64px;flex-shrink:0">${esc(p.name)}</b><input class="inp" style="background:#fff;padding:8px 10px;min-width:0" type="email" placeholder="their email" value="${esc(a.email||'')}"><select class="inp" style="background:#fff;padding:8px 30px 8px 10px;width:auto;flex-shrink:0">${opts([['requester','requester'],['broker','broker']],a.role||(p.id==='eric'?'broker':'requester'))}</select></div>`;}).join('')}</div>
-  <div class="row mt14" style="justify-content:flex-start;gap:8px;flex-wrap:wrap"><button class="btn dark" onclick="saveAccess()">save access</button><button class="btn" onclick="copyText(location.href.split('#')[0],'link copied')">🔗 copy the oonda link</button><button class="btn ghost" onclick="signOut()">sign out</button></div></div>${gifCardHTML()}`;
+  <div class="row mt14" style="justify-content:flex-start;gap:8px;flex-wrap:wrap"><button class="btn dark" onclick="saveAccess()">save access</button><button class="btn" onclick="copyText(location.href.split('#')[0],'link copied')">🔗 copy the oonda link</button><button class="btn ghost" onclick="signOut()">sign out</button></div></div>${gifCardHTML()}${rcCardHTML()}`;
 }
 function setupGuide(){
   modal(`<div class="mh"><h2>turn on logins<span class="ast">𖹭</span></h2><button class="x" onclick="closeM()">✕</button></div>
