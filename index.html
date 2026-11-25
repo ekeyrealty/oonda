@@ -554,6 +554,12 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 .emogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr))}
 .emogrid button{border:0;background:none;cursor:pointer;font-size:22px;height:38px;border-radius:10px;transition:background .12s,transform .12s;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
 .emogrid button:hover{background:var(--blush);transform:scale(1.15)}
+.cib.gifb{font-family:var(--mono);font-size:11px;font-weight:800;color:var(--deeprose);width:40px;border-radius:12px}
+.gifgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.gifgrid button{border:0;padding:0;background:var(--soft);border-radius:10px;overflow:hidden;cursor:pointer;height:92px;transition:transform .15s}
+.gifgrid button:hover{transform:scale(1.04)}
+.gifgrid img{width:100%;height:100%;object-fit:cover;display:block}
+.gifpow{font-family:var(--mono);font-size:10px;letter-spacing:.06em;font-weight:700;color:#7a6a6d}
 .emofoot{padding:6px 14px 9px;text-align:center;box-shadow:0 -1px 0 rgba(235,223,225,.7)}
 @media (max-width:900px){.chatbox{grid-template-rows:auto auto}.chatmain{overflow:visible}.chatmsgs{flex:none;height:62vh}}
 /* activity */
@@ -1973,7 +1979,7 @@ function cloudPush(){
 function setBadge(t){const b=$('#saved');if(b)b.textContent=t;}
 function pushPublic(force){
   if(CLOUD.role!=='owner')return;
-  const pub={listings:S.listings.filter(l=>l.status!=='withdrawn').map(l=>({id:l.id,address:l.address,city:l.city||''})),people:S.team.map(p=>({id:p.id,name:p.id==='me'?(S.settings.name||'mae'):p.name,email:emailOfPid(p.id)}))};
+  const pub={listings:S.listings.filter(l=>l.status!=='withdrawn').map(l=>({id:l.id,address:l.address,city:l.city||''})),people:S.team.map(p=>({id:p.id,name:p.id==='me'?(S.settings.name||'mae'):p.name,email:emailOfPid(p.id)})),giphy:S.settings.giphyKey||''};
   const j=JSON.stringify(pub);if(!force&&j===CLOUD.pubJson)return;CLOUD.pubJson=j;
   CLOUD.db.doc('oonda/public').set(Object.assign(pub,{updatedAt:ts0()})).catch(()=>{});
 }
@@ -2020,7 +2026,7 @@ async function saveAccess(){
 ICONS.chat='<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h7A2.5 2.5 0 0 1 16 6.5v4a2.5 2.5 0 0 1-2.5 2.5H9l-3.5 3v-3A2.5 2.5 0 0 1 4 10.5z"/><path d="M16 9h1.5A2.5 2.5 0 0 1 20 11.5v4a2.5 2.5 0 0 1-2.5 2.5V21L14 18h-2.5A2.5 2.5 0 0 1 9 16"/>';
 const CHAT={room:'team',msgs:{},subs:{},pins:{},first:{},read:{},pres:{},presOn:false,reply:null,edit:null,q:'',pinOpen:false,ac:null,att:null,imgs:{}};
 const RX=['❤️','👍','✅'];
-const msgText=m=>m.text||(m.img?(m.img.type==='image/gif'?'🎞 GIF':'📷 photo'):'');
+const msgText=m=>m.text||(m.img?(m.img.type==='image/gif'?'🎞 GIF':'📷 photo'):'')||(m.gif?'🎞 GIF':'');
 const meEmail=()=>CLOUD.user?CLOUD.user.email.toLowerCase():'';
 const ownerEm=()=>String(SETUP.ownerEmail||'').toLowerCase();
 const cap=s=>s?String(s)[0].toUpperCase()+String(s).slice(1):s;
@@ -2178,7 +2184,7 @@ function chatMsgsHTML(){
     const head=!p||p.email!==m.email||m.ms-p.ms>5*6e4||dayKey(p.ms)!==k||!!m.reply, last=!n||n.email!==m.email||n.ms-m.ms>5*6e4;
     const done=m.rx&&(m.rx['✅']||[]).length;
     const rq=m.reply?`<div class="rq" data-i="${esc(m.reply.id)}" onclick="jumpMsg(this.dataset.i)"><b>↩ ${esc(m.reply.name)}</b>${esc(String(m.reply.text).slice(0,120))}</div>`:'';
-    out+=`<div class="cmsg ${mine?'mine':''} ${head?'gap':''} ${last?'last':''} ${mentionsMe(m)&&!mine?'atme':''}" data-mid="${esc(m.id)}">${mine?'':(head?av(msgPid(m),30):'<span style="width:30px;flex-shrink:0"></span>')}<div class="cb">${head&&!mine?`<div class="cname">${esc(msgName(m))}</div>`:''}${actHTML(CHAT.room,m,mine)}<div class="bub${m.img&&!m.text?' imgonly':''}" onclick="if(!event.target.closest('a,.rq,.cimg,.limg'))this.closest('.cmsg').classList.toggle('sh')">${m.pinned?'<span class="pinmk" title="pinned">📌</span>':''}${rq}${m.img?imgHTML(CHAT.room,m):''}${linkify(m.text)}${m.edited?'<span class="ed">edited</span>':''}</div>${rxHTML(CHAT.room,m)}<div class="ctime">${fT(m.ms)} pht · ${fT(m.ms,CST)} ${cAb(m.ms).toLowerCase()}${done?' · <span class="donetag">✅ done</span>':''}</div></div></div>`;
+    out+=`<div class="cmsg ${mine?'mine':''} ${head?'gap':''} ${last?'last':''} ${mentionsMe(m)&&!mine?'atme':''}" data-mid="${esc(m.id)}">${mine?'':(head?av(msgPid(m),30):'<span style="width:30px;flex-shrink:0"></span>')}<div class="cb">${head&&!mine?`<div class="cname">${esc(msgName(m))}</div>`:''}${actHTML(CHAT.room,m,mine)}<div class="bub${(m.img||m.gif)&&!m.text?' imgonly':''}" onclick="if(!event.target.closest('a,.rq,.cimg,.limg'))this.closest('.cmsg').classList.toggle('sh')">${m.pinned?'<span class="pinmk" title="pinned">📌</span>':''}${rq}${m.img?imgHTML(CHAT.room,m):''}${m.gif?`<img class="limg gifim" src="${esc(m.gif.url)}" style="aspect-ratio:${+m.gif.w||1}/${+m.gif.h||1}" alt="${esc(m.gif.title||'GIF')}" loading="lazy" referrerpolicy="no-referrer" onclick="chatLightbox(this.src)">`:''}${linkify(m.text)}${m.edited?'<span class="ed">edited</span>':''}</div>${rxHTML(CHAT.room,m)}<div class="ctime">${fT(m.ms)} pht · ${fT(m.ms,CST)} ${cAb(m.ms).toLowerCase()}${done?' · <span class="donetag">✅ done</span>':''}</div></div></div>`;
   });
   return out+seenHTML();
 }
@@ -2210,12 +2216,12 @@ function chatInner(){
   if(!chatRooms().some(r=>r.room===CHAT.room))CHAT.room='team';
   return `<div class="chatbox"><div class="chatside"><div class="ch" style="padding:2px 8px 8px"><h3>chat</h3><span class="lab">${chatRooms().length-1} people</span></div><div class="csearch"><input id="chatQ" placeholder="🔍 search messages" value="${esc(CHAT.q)}" oninput="chatSearch(this.value)"><button title="clear" onclick="$('#chatQ').value='';chatSearch('')">✕</button></div><div id="chatList">${chatListHTML()}</div></div>
   <div class="chatmain" ondragover="event.preventDefault();this.classList.add('drop')" ondragleave="this.classList.remove('drop')" ondrop="chatDrop(event,this)"><div class="chathead" id="chatHead">${chatHeadHTML()}</div><div id="chatPins">${pinsHTML()}</div><div class="chatmsgs" id="chatMsgs">${chatMsgsHTML()}</div>
-  <div id="chatCtx">${ctxHTML()}</div><div class="chatin"><div id="chatAc" class="chatac"></div><div class="cbtns"><button class="cib" title="emoji" onclick="openEmo(this,'insert')">😊</button><button class="cib" title="send a photo or GIF" onclick="$('#chatFile').click()">🖼</button><input type="file" id="chatFile" accept="image/*" hidden onchange="chatPickFile(this.files[0]);this.value=''"></div><textarea id="chatTx" onpaste="chatPaste(event)" rows="1" placeholder="write a message… (@ to mention, enter to send, shift+enter for a new line)" onkeydown="chatKey(event)" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,140)+'px';chatAcUpd()" onblur="setTimeout(chatAcClose,150)"></textarea><button class="btn dark" onclick="sendChat()">send 💌</button></div></div></div>`;
+  <div id="chatCtx">${ctxHTML()}</div><div class="chatin"><div id="chatAc" class="chatac"></div><div class="cbtns"><button class="cib" title="emoji" onclick="openEmo(this,'insert')">😊</button><button class="cib" title="send a photo" onclick="$('#chatFile').click()">🖼</button><button class="cib gifb" title="search GIFs" onclick="openGif(this)">GIF</button><input type="file" id="chatFile" accept="image/*" hidden onchange="chatPickFile(this.files[0]);this.value=''"></div><textarea id="chatTx" onpaste="chatPaste(event)" rows="1" placeholder="write a message… (@ to mention, enter to send, shift+enter for a new line)" onkeydown="chatKey(event)" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,140)+'px';chatAcUpd()" onblur="setTimeout(chatAcClose,150)"></textarea><button class="btn dark" onclick="sendChat()">send 💌</button></div></div></div>`;
 }
-function chatAfter(){const b=$('#chatMsgs');if(!b)return;b.scrollTop=b.scrollHeight;if(document.visibilityState==='visible'){markRead(CHAT.room);const cl=$('#chatList');if(cl&&!CHAT.q)cl.innerHTML=chatListHTML();}chatBadges();}
+function chatAfter(){const b=$('#chatMsgs');if(!b)return;b.scrollTop=b.scrollHeight;if(!b._imgw){b._imgw=1;b.addEventListener('load',e=>{if(e.target.tagName==='IMG'&&b.scrollHeight-b.scrollTop-b.clientHeight<e.target.clientHeight+160)b.scrollTop=b.scrollHeight;},true);}if(document.visibilityState==='visible'){markRead(CHAT.room);const cl=$('#chatList');if(cl&&!CHAT.q)cl.innerHTML=chatListHTML();}chatBadges();}
 function chatRefresh(room){
   const cl=$('#chatList');if(cl)cl.innerHTML=chatListHTML();
-  if(room===CHAT.room){const b=$('#chatMsgs');if(b){const near=b.scrollHeight-b.scrollTop-b.clientHeight<120,top=b.scrollTop;b.innerHTML=chatMsgsHTML();b.scrollTop=near?b.scrollHeight:top;if(document.visibilityState==='visible')markRead(room);}}
+  if(room===CHAT.room){const b=$('#chatMsgs');if(b){const lm=(CHAT.msgs[room]||[]).slice(-1)[0],mineNew=!!lm&&lm.email===meEmail()&&CHAT.lastId!==lm.id;if(lm)CHAT.lastId=lm.id;const near=mineNew||b.scrollHeight-b.scrollTop-b.clientHeight<120,top=b.scrollTop;b.innerHTML=chatMsgsHTML();b.scrollTop=near?b.scrollHeight:top;if(document.visibilityState==='visible')markRead(room);}}
   chatBadges();
 }
 function openChat(room,jump){
@@ -2251,6 +2257,7 @@ function chatAcPick(i){
 }
 function chatKey(e){
   if(e.key==='Escape'&&$('#emoPick')){e.preventDefault();closeEmo();return;}
+  if(e.key==='Escape'&&$('#gifPick')){e.preventDefault();closeGif();return;}
   if(CHAT.ac){
     if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();CHAT.ac.i=(CHAT.ac.i+(e.key==='ArrowDown'?1:-1)+CHAT.ac.list.length)%CHAT.ac.list.length;chatAcUpd();return;}
     if(e.key==='Enter'||e.key==='Tab'){e.preventDefault();chatAcPick(CHAT.ac.i);return;}
@@ -2394,6 +2401,49 @@ function emoPick(e){
   const t=$('#chatTx');if(!t)return;const a=t.selectionStart??t.value.length,b=t.selectionEnd??a;
   t.value=t.value.slice(0,a)+e+t.value.slice(b);t.selectionStart=t.selectionEnd=a+e.length;
 }
+
+/* ---- GIF search (Giphy) ---- */
+const gifKey=()=>(CLOUD.role==='owner'?S.settings.giphyKey:'')||(CLOUD.pub&&CLOUD.pub.giphy)||S.settings.giphyKey||'';
+function gifCardHTML(){
+  const k=S.settings.giphyKey||'';
+  return `<div class="card s12"><div class="ch"><h3>🎞 GIF search</h3><span class="pill" style="background:${k?'var(--sage-xl)':'var(--soft)'}">${k?'on':'off'}</span></div>
+  <div style="font-size:13px;color:#6f5c60;margin-bottom:10px;line-height:1.55">Paste your Giphy API key (from developers.giphy.com) and everyone gets a <b>GIF</b> button in chat with search. A free beta key allows about 100 searches an hour for the whole team.</div>
+  <div class="row" style="gap:8px;flex-wrap:wrap"><input id="gifKey" class="inp" style="max-width:420px;font-family:var(--mono);font-size:12px" placeholder="paste the Giphy API key" value="${esc(k)}" autocomplete="off" spellcheck="false"><button class="btn dark" onclick="saveGifKey()">save</button>${k?`<button class="btn ghost" onclick="$('#gifKey').value='';saveGifKey()">remove</button>`:''}</div></div>`;
+}
+function saveGifKey(){const v=($('#gifKey')||{}).value||'';S.settings.giphyKey=v.trim();save();pushPublic(true);render();toast('🎞',S.settings.giphyKey?'GIF search is on':'GIF search turned off',S.settings.giphyKey?'everyone gets a GIF button in chat after a refresh':'');}
+let gifT=null;
+function gifFetch(q){
+  const k=gifKey();if(!k)return Promise.reject({nokey:true});
+  const u=q?`https://api.giphy.com/v1/gifs/search?api_key=${encodeURIComponent(k)}&q=${encodeURIComponent(q)}&limit=24&rating=pg-13&lang=en`:`https://api.giphy.com/v1/gifs/trending?api_key=${encodeURIComponent(k)}&limit=24&rating=pg-13`;
+  if(!q&&CHAT.gifTrend&&Date.now()-CHAT.gifTrend.at<6e5)return Promise.resolve(CHAT.gifTrend.d);
+  return fetch(u).then(r=>{if(!r.ok)throw {status:r.status};return r.json();}).then(j=>{const d=(j.data||[]).map(g=>({id:g.id,title:g.title||'GIF',prev:(g.images.fixed_width_small||g.images.fixed_height_small||g.images.fixed_height).url,url:g.images.fixed_height.url,w:+g.images.fixed_height.width,h:+g.images.fixed_height.height}));if(!q)CHAT.gifTrend={at:Date.now(),d};return d;});
+}
+function gifShow(q){
+  const b=$('#gifBody');if(!b)return;b.innerHTML='<div class="empty" style="padding:30px 8px">loading…</div>';
+  gifFetch(q).then(d=>{if(!$('#gifBody'))return;CHAT.gifRes=d;b.innerHTML=d.length?`<div class="lab" style="padding:4px 2px 6px">${q?'results':'trending'}</div><div class="gifgrid">${d.map((g,i)=>`<button data-i="${i}" title="${esc(g.title)}"><img src="${esc(g.prev)}" alt="" loading="lazy" referrerpolicy="no-referrer"></button>`).join('')}</div>`:'<div class="empty" style="padding:30px 8px">no GIFs found</div>';})
+  .catch(e=>{if(!$('#gifBody'))return;b.innerHTML=`<div class="empty" style="padding:26px 10px">${e&&e.nokey?'GIF search isn’t set up yet — Mae can add a Giphy key in settings':e&&e.status===429?'the team used up this hour’s GIF searches — try again a bit later, or paste a Giphy link':e&&(e.status===401||e.status===403)?'the Giphy key isn’t working — Mae can check it in settings':'couldn’t reach Giphy — check your internet'}</div>`;});
+}
+function openGif(btn){
+  const was=CHAT.gifBtn===btn&&$('#gifPick');closeGif();closeEmo();if(was)return;
+  CHAT.gifBtn=btn;const d=document.createElement('div');d.id='gifPick';d.className='emopick';
+  d.innerHTML=`<div class="emohd"><input id="gifQ" placeholder="🔍 search GIFs (yay, sold, thank you…)" oninput="clearTimeout(gifT);const v=this.value.trim();gifT=setTimeout(()=>gifShow(v),450)" onkeydown="if(event.key==='Escape')closeGif()"></div><div class="emobody" id="gifBody" onclick="const b=event.target.closest('button[data-i]');if(b)sendGif(CHAT.gifRes[+b.dataset.i])"></div><div class="emofoot"><span class="gifpow">POWERED BY GIPHY</span></div>`;
+  document.body.appendChild(d);
+  const r=btn.getBoundingClientRect(),W=Math.min(348,innerWidth-16),H=400;
+  d.style.width=W+'px';d.style.left=Math.max(8,Math.min(r.left-W/2+r.width/2,innerWidth-W-8))+'px';
+  d.style.top=(r.top-H-8>8?r.top-H-8:Math.min(r.bottom+8,innerHeight-H-8))+'px';
+  gifShow('');
+  setTimeout(()=>{document.addEventListener('mousedown',gifOutside);const q=$('#gifQ');if(q&&matchMedia('(pointer:fine)').matches)q.focus();},0);
+}
+function gifOutside(e){if(!e.target.closest('#gifPick')&&e.target.closest('button')!==CHAT.gifBtn)closeGif();}
+function closeGif(){const d=$('#gifPick');if(d)d.remove();CHAT.gifBtn=null;document.removeEventListener('mousedown',gifOutside);}
+function sendGif(g){
+  if(!g)return;closeGif();const own=CLOUD.role==='owner',room=CHAT.room;
+  const doc={text:'',email:meEmail(),person:own?'me':(CLOUD.person||''),name:myName(),ms:Date.now(),at:ts0(),mentions:[],gif:{url:g.url,w:g.w,h:g.h,title:String(g.title).slice(0,80)}};
+  if(CHAT.reply)doc.reply={id:CHAT.reply.id,name:CHAT.reply.name,text:CHAT.reply.text};
+  CHAT.reply=null;setCtx();
+  roomColl(room).add(doc).catch(e=>toast('🙈','GIF not sent',niceErr(e)));
+}
+
 /* activity log */
 const ACT={signin:['🔑','#e6e7dc'],signout:['👋','#eee8e4'],request:['💌','#fbe3e2'],status:['🎨','#efcdc9'],done:['✅','#dfe3d4'],listing:['🏡','#e8d3d8'],studio:['🛋️','#efcdc9'],meeting:['💬','#ebdfe1']};
 let actWho='all';
@@ -2500,7 +2550,7 @@ function cloudCard(){
   return `<div class="card s12"><div class="ch"><h3>🔐 logins & sharing</h3><span class="lab">signed in as ${esc(CLOUD.user.email)} · ☁ live sync on</span></div>
   <div style="font-size:13px;color:#6f5c60;margin-bottom:12px;line-height:1.55">Add the email each person will sign in with. <b>broker</b> sees your whole board (view only) and can send requests · <b>requester</b> sends requests and sees only their own.</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:10px">${requesters().map(p=>{const a=byP[p.id]||{};return `<div class="row" data-acc="${p.id}" style="gap:10px;background:var(--soft);border-radius:18px;padding:8px 10px">${av(p.id,34)}<b style="width:64px;flex-shrink:0">${esc(p.name)}</b><input class="inp" style="background:#fff;padding:8px 10px;min-width:0" type="email" placeholder="their email" value="${esc(a.email||'')}"><select class="inp" style="background:#fff;padding:8px 30px 8px 10px;width:auto;flex-shrink:0">${opts([['requester','requester'],['broker','broker']],a.role||(p.id==='eric'?'broker':'requester'))}</select></div>`;}).join('')}</div>
-  <div class="row mt14" style="justify-content:flex-start;gap:8px;flex-wrap:wrap"><button class="btn dark" onclick="saveAccess()">save access</button><button class="btn" onclick="copyText(location.href.split('#')[0],'link copied')">🔗 copy the oonda link</button><button class="btn ghost" onclick="signOut()">sign out</button></div></div>`;
+  <div class="row mt14" style="justify-content:flex-start;gap:8px;flex-wrap:wrap"><button class="btn dark" onclick="saveAccess()">save access</button><button class="btn" onclick="copyText(location.href.split('#')[0],'link copied')">🔗 copy the oonda link</button><button class="btn ghost" onclick="signOut()">sign out</button></div></div>${gifCardHTML()}`;
 }
 function setupGuide(){
   modal(`<div class="mh"><h2>turn on logins<span class="ast">𖹭</span></h2><button class="x" onclick="closeM()">✕</button></div>
